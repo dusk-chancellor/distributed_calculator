@@ -48,7 +48,7 @@ func getFromFile() (*Expressions, error) {
 		logger.Printf("Cannot unmarshal data to expression: %s", err)
 		return nil, fmt.Errorf("failed to unmarshal JSON: %v", err)
 	}
-
+	logger.Printf("Expressions list retrieved from %s", fileName)
 	return &expressions, nil
 }
 
@@ -104,5 +104,6 @@ func ClearExpressionsList() error {
 		logger.Printf("Failed to write default state to file: %v", err)
 		return err
 	}
+	logger.Printf("Expressions list cleared")
 	return nil
 }

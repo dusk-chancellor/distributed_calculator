@@ -1,3 +1,4 @@
+// ЮХУУ запускаем сервак storage
 package main
 
 import (
@@ -6,7 +7,7 @@ import (
 )
 
 func main() {
-	mux := http.NewServeMux()
+	mux := http.NewServeMux() // с mux удобнее
 	mux.HandleFunc("/getexpressionslist", handlers.GetExpressionsHandler)
 	mux.HandleFunc("/setnewexpression", handlers.SetExpressionHandler)
 	mux.HandleFunc("/clearexpressionslist", handlers.ClearExpressionsHandler)

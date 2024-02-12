@@ -1,10 +1,10 @@
-Set New Expression:
+Добавить новое выражение (Set New Expression):
     curl -X POST --data-urlencode "expr=2+2*2" http://localhost:8081/setnewexpression
     curl -X POST --data-urlencode "expr=2-2*2" http://localhost:8081/setnewexpression
     curl -X POST --data-urlencode "expr=2+2" http://localhost:8081/setnewexpression
     curl -X POST --data-urlencode "expr=2-2" http://localhost:8081/setnewexpression
     curl -X POST --data-urlencode "expr=2/2*2" http://localhost:8081/setnewexpression
-Get Expressions List:
+Получить список выражений (Get Expressions List):
     curl http://localhost:8081/getexpressionslist
-Clear Expressions List:
+Очистить все нахр*н (Clear Expressions List):
     curl http://localhost:8081/clearexpressionslist
