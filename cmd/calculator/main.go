@@ -11,6 +11,8 @@ func main() {
 	mux.HandleFunc("/getexpressionslist", handlers.GetExpressionsHandler)
 	mux.HandleFunc("/setnewexpression", handlers.SetExpressionHandler)
 	mux.HandleFunc("/clearexpressionslist", handlers.ClearExpressionsHandler)
+	mux.HandleFunc("/settimeout", handlers.SetTimeoutsHandler)
+	mux.HandleFunc("/gettimeouts", handlers.GetTimeoutsHandler)
 
 	err := http.ListenAndServe(":8081", mux)
 	if err != nil {

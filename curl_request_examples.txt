@@ -6,5 +6,10 @@
     curl -X POST --data-urlencode "expr=2/2*2" http://localhost:8081/setnewexpression
 Получить список выражений (Get Expressions List):
     curl http://localhost:8081/getexpressionslist
+Добавить новый таймаут (Set New Timeout):
+    curl -X POST --data-urlencode "timeout=+300" http://localhost:8081/settimeout
+    curl -X POST --data-urlencode "timeout=*20" http://localhost:8081/settimeout
+Получить список таймаутов (Get Timeouts List):
+    curl http://localhost:8081/gettimeouts
 Очистить все нахр*н (Clear Expressions List):
     curl http://localhost:8081/clearexpressionslist
