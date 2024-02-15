@@ -9,6 +9,8 @@
 Добавить новый таймаут (Set New Timeout):
     curl -X POST --data-urlencode "timeout=+300" http://localhost:8081/settimeout
     curl -X POST --data-urlencode "timeout=*20" http://localhost:8081/settimeout
+    curl -X POST --data-urlencode "timeout=/50" http://localhost:8081/settimeout
+    curl -X POST --data-urlencode "timeout=-100" http://localhost:8081/settimeout
 Получить список таймаутов (Get Timeouts List):
     curl http://localhost:8081/gettimeouts
 Очистить все нахр*н (Clear Expressions List):

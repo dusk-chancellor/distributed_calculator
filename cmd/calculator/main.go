@@ -1,4 +1,4 @@
-// ЮХУУ запускаем сервак storage
+// ЮХУУ запускаем client server
 package main
 
 import (

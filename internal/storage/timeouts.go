@@ -17,38 +17,41 @@ type Timeouts struct {
 const timeoutsFile = "timeouts.json"
 
 func SetNewTimeout(timeout string) error {
-	tmt := ""
-	var oper string
+	timeouts, err := getFromTimeoutsFile(timeoutsFile)
+	if err != nil {
+		logger.Printf("Cannot read getFromTimeoutsFile: %s", err)
+		return err
+	}
+	n := ""
+	var oper int
 	for _, ch := range timeout {
 		char := string(ch)
 		switch char {
 		case "+":
-			oper = "Plus"
+			oper = 1
 		case "-":
-			oper = "Minus"
+			oper = 2
 		case "*":
-			oper = "Multiply"
+			oper = 3
 		case "/":
-			oper = "Divide"
+			oper = 4
 		default:
-			tmt += char
+			n += char
 		}
 	}
 
-	var newTimeout Timeouts
-	if oper == "Plus" {
-		newTimeout.Plus = tmt
-	} else if oper == "Minus" {
-		newTimeout.Minus = tmt
-	} else if oper == "Multiply" {
-		newTimeout.Multiply = tmt
-	} else if oper == "Divide" {
-		newTimeout.Divide = tmt
-	} else {
-		return nil
+	switch oper {
+	case 1:
+		timeouts.Plus = n
+	case 2:
+		timeouts.Minus = n
+	case 3:
+		timeouts.Multiply = n
+	case 4:
+		timeouts.Divide = n
 	}
 
-	return saveToFile(timeoutsFile, newTimeout)
+	return saveToFile(timeoutsFile, timeouts)
 }
 
 func GetTimeouts() (*Timeouts, error) {

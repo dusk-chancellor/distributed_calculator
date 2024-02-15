@@ -31,7 +31,7 @@ func NewExpressionsList() *Expressions {
 func SetNewExpression(expr string) error {
 	exprs, err := getFromExpressionsFile(expressionsFile)
 	if err != nil {
-		logger.Printf("Cannot getFromFile: %s", err)
+		logger.Printf("Cannot getFromExpressionsFile: %s", err)
 		return err
 	}
 
