@@ -14,7 +14,7 @@ func ToPostfix(s string) string {
 	for i := 0; i < length; i++ {
 		char := string(s[i]) // элемент строки
 
-		if char == " " { // пробелы нам нах*р не нужны
+		if char == " " { // пробелы нам не нужны
 			continue
 		}
 

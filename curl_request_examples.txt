@@ -1,17 +1,17 @@
 Добавить новое выражение (Set New Expression):
-    curl -X POST --data-urlencode "expr=2+2*2" http://localhost:8081/setnewexpression
-    curl -X POST --data-urlencode "expr=2-2*2" http://localhost:8081/setnewexpression
-    curl -X POST --data-urlencode "expr=2+2" http://localhost:8081/setnewexpression
-    curl -X POST --data-urlencode "expr=2-2" http://localhost:8081/setnewexpression
-    curl -X POST --data-urlencode "expr=2/2*2" http://localhost:8081/setnewexpression
+    curl -X POST --data-urlencode "expr=2+2*2" http://localhost:8080/setnewexpression
+    curl -X POST --data-urlencode "expr=2-2*2" http://localhost:8080/setnewexpression
+    curl -X POST --data-urlencode "expr=2+2" http://localhost:8080/setnewexpression
+    curl -X POST --data-urlencode "expr=2-2" http://localhost:8080/setnewexpression
+    curl -X POST --data-urlencode "expr=2/2*2" http://localhost:8080/setnewexpression
 Получить список выражений (Get Expressions List):
-    curl http://localhost:8081/getexpressionslist
+    curl http://localhost:8080/getexpressionslist
 Добавить новый таймаут (Set New Timeout):
-    curl -X POST --data-urlencode "timeout=+300" http://localhost:8081/settimeout
-    curl -X POST --data-urlencode "timeout=*20" http://localhost:8081/settimeout
-    curl -X POST --data-urlencode "timeout=/50" http://localhost:8081/settimeout
-    curl -X POST --data-urlencode "timeout=-100" http://localhost:8081/settimeout
+    curl -X POST --data-urlencode "timeout=+300" http://localhost:8080/settimeout
+    curl -X POST --data-urlencode "timeout=*20" http://localhost:8080/settimeout
+    curl -X POST --data-urlencode "timeout=/50" http://localhost:8080/settimeout
+    curl -X POST --data-urlencode "timeout=-100" http://localhost:8080/settimeout
 Получить список таймаутов (Get Timeouts List):
-    curl http://localhost:8081/gettimeouts
-Очистить все нахр*н (Clear Expressions List):
-    curl http://localhost:8081/clearexpressionslist
+    curl http://localhost:8080/gettimeouts
+Очистить все предыдущие выражения (Clear Expressions List):
+    curl http://localhost:8080/clearexpressionslist

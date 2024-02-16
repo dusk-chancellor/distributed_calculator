@@ -14,6 +14,7 @@ type Expression struct {
 	Expression string `json:"expression"`
 	Date       string `json:"date"`
 	Status     string `json:"status"`
+	Answer     string `json:"answer"`
 }
 
 type Expressions struct {
@@ -34,12 +35,27 @@ func SetNewExpression(expr string) error {
 		logger.Printf("Cannot getFromExpressionsFile: %s", err)
 		return err
 	}
+	var newExpr Expression
+	for _, ch := range expr {
+		if ch >= '9' && ch <= '0' && (ch != '+' && ch != '-' && ch != '*' && ch != '/') {
+			logger.Printf("Wrong Expression Format")
+			newExpr = Expression{
+				ID:         "",
+				Expression: expr,
+				Status:     "invalid",
+				Date:       time.Now().String(),
+			}
+			exprs.Expressions = append(exprs.Expressions, &newExpr)
+
+			return saveToFile(expressionsFile, exprs)
+		}
+	}
 
 	newID := fmt.Sprintf("%d", len(exprs.Expressions)+1)
-	newExpr := Expression{
+	newExpr = Expression{
 		ID:         newID,
 		Expression: expr,
-		Status:     "-",
+		Status:     "in process",
 		Date:       time.Now().String(),
 	}
 

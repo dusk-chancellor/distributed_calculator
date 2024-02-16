@@ -1,4 +1,4 @@
-package handlers
+package curl_handlers
 
 import (
 	"calculator_yandex/internal/storage"
