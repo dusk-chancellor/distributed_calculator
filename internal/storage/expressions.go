@@ -36,13 +36,14 @@ func SetNewExpression(expr string) error {
 	}
 
 	newID := fmt.Sprintf("%d", len(exprs.Expressions)+1)
-	newExpr := &Expression{
+	newExpr := Expression{
 		ID:         newID,
 		Expression: expr,
 		Status:     "-",
 		Date:       time.Now().String(),
 	}
-	exprs.Expressions = append(exprs.Expressions, newExpr)
+
+	exprs.Expressions = append(exprs.Expressions, &newExpr)
 
 	return saveToFile(expressionsFile, exprs)
 }
