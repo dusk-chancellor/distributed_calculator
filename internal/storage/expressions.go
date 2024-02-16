@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"calculator_yandex/http-server/orchestrator_handlers"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -21,7 +22,7 @@ type Expressions struct {
 	Expressions []*Expression `json:"expressions"`
 }
 
-const expressionsFile = "expressions.json"
+const expressionsFile = "database/expressions.json"
 
 var logger = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 
@@ -49,6 +50,9 @@ func SetNewExpression(expr string) error {
 
 			return saveToFile(expressionsFile, exprs)
 		}
+	}
+	if err := orchestrator_handlers.PostExpressionToAgent(expr); err != nil {
+		return err
 	}
 
 	newID := fmt.Sprintf("%d", len(exprs.Expressions)+1)

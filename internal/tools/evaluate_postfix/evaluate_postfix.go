@@ -26,43 +26,47 @@ func (s *Stack) Pop() float64 {
 	return item
 }
 
-// Calculate - функция на время проверки работоспособности постфиксной записи
-func Calculate(op1, op2 float64, operator string) float64 {
+// Calculate - вычисляет
+func Calculate(ch chan float64, op1, op2 float64, operator string) {
 	switch operator {
 	case "+":
-		return op2 + op1
+		ch <- op2 + op1
 	case "-":
-		return op2 - op1
+		ch <- op2 - op1
 	case "*":
-		return op2 * op1
+		ch <- op2 * op1
 	case "/":
-		return op2 / op1
+		if op1 == 0 {
+			ch <- -1
+			return
+		}
+		ch <- op2 / op1
 	}
-	return 0
+	ch <- 0
 }
 
-// EvaluatePostfix - пока что функция для вычисления всех значений со стека
-// но в будущем координально изменится под работу для агентов (воркер)
+// EvaluatePostfix - для вычисления всех значений со стека
 func EvaluatePostfix(expression string) float64 {
 	var stack Stack
 	tokens := strings.Split(expression, " ")
+	ch := make(chan float64)
 
-	for _, token := range tokens {
-		if token == "+" || token == "-" || token == "*" || token == "/" {
-			// если токен - оператор, то забираем 2 последних элемента со стека
-			op1 := stack.Pop()
-			op2 := stack.Pop()
-			res := Calculate(op1, op2, token)
-			stack.Push(res)
-		} else {
-			// если токен не оператор - то операнд(число), пушим в стек :)
-			op, err := strconv.ParseFloat(token, 64)
-			if err != nil {
-				return 0
+	go func() {
+		for _, token := range tokens {
+			if token == "+" || token == "-" || token == "*" || token == "/" {
+				// если токен - оператор, то забираем 2 последних элемента со стека
+				op1 := stack.Pop()
+				op2 := stack.Pop()
+				go Calculate(ch, op1, op2, token)
+				stack.Push(<-ch)
+			} else {
+				// если токен не оператор - то операнд(число), пушим в стек :)
+				op, _ := strconv.ParseFloat(token, 64)
+
+				stack.Push(op)
 			}
-			stack.Push(op)
 		}
-	}
+	}()
 	// в этом случае, последний элемент стека и есть наш ответ
 	return stack.Pop()
 }

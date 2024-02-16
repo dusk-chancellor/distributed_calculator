@@ -14,7 +14,7 @@ type Timeouts struct {
 	Divide   string `json:"divide"`
 }
 
-const timeoutsFile = "timeouts.json"
+const timeoutsFile = "database/timeouts.json"
 
 func SetNewTimeout(timeout string) error {
 	timeouts, err := getFromTimeoutsFile(timeoutsFile)
