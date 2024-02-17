@@ -4,6 +4,7 @@ import (
 	"calculator_yandex/internal/calculation"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func SetExprHandler(w http.ResponseWriter, r *http.Request) {
@@ -19,10 +20,10 @@ func SetExprHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	expression := string(body)
+	idAndExpr := strings.Split(string(body), ":")
 
-	if err := calculation.ReceiveExpression(expression); err != nil {
-		http.Error(w, "Cannot ", http.StatusInternalServerError)
+	if err := calculation.ReceiveAndPost(idAndExpr[0], idAndExpr[1]); err != nil {
+		http.Error(w, "Cannot receive and post", http.StatusInternalServerError)
 		return
 	}
 

@@ -1,7 +1,8 @@
 package storage
 
 import (
-	"calculator_yandex/http-server/orchestrator_handlers"
+	"calculator_yandex/internal/post"
+	"calculator_yandex/internal/tools/infix_to_postfix"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -51,15 +52,12 @@ func SetNewExpression(expr string) error {
 			return saveToFile(expressionsFile, exprs)
 		}
 	}
-	if err := orchestrator_handlers.PostExpressionToAgent(expr); err != nil {
-		return err
-	}
-
 	newID := fmt.Sprintf("%d", len(exprs.Expressions)+1)
+
 	newExpr = Expression{
 		ID:         newID,
 		Expression: expr,
-		Status:     "in process",
+		Status:     "received",
 		Date:       time.Now().String(),
 	}
 
@@ -95,5 +93,26 @@ func getFromExpressionsFile(fileName string) (*Expressions, error) {
 }
 
 func GetStoredExpressions() (*Expressions, error) {
+	exprs, err := getFromExpressionsFile(expressionsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, expr := range exprs.Expressions {
+		if expr.Status == "received" {
+			expr.Status = "processing"
+			if err := saveToFile(expressionsFile, exprs); err != nil {
+				return nil, err
+			}
+			postfixExpr := infix_to_postfix.ToPostfix(expr.Expression)
+			sendingData := fmt.Sprintf("%s:%s", expr.ID, postfixExpr)
+			if err := post.PostExpressionToAgent(sendingData); err != nil {
+				logger.Printf("Cannot post to agent: %s", err)
+				return nil, err
+			}
+			logger.Printf("Successfully posted expression to agent")
+		}
+	}
+
 	return getFromExpressionsFile(expressionsFile)
 }

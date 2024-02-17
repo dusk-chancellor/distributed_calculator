@@ -1,24 +1,34 @@
 package orchestrator_handlers
 
 import (
-	"bytes"
+	"calculator_yandex/internal/manage"
+	"io"
+	"log"
 	"net/http"
+	"strings"
 )
 
-func PostExpressionToAgent(expr string) error {
-	req, err := http.NewRequest(http.MethodPost, "http://localhost:8081/setexpr", bytes.NewBufferString(expr))
-	if err != nil {
-		return err
+func GetAnswerHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Only Post method allowed", http.StatusMethodNotAllowed)
+		return
 	}
 
-	req.Header.Set("Content-Type", "text/plain")
-
-	client := http.Client{}
-	resp, err := client.Do(req)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		return err
+		http.Error(w, "Cannot read request body", http.StatusInternalServerError)
+		return
 	}
-	defer resp.Body.Close()
+	defer r.Body.Close()
 
-	return nil
+	idAndExpr := strings.Split(string(body), ":")
+	log.Println("GetAnswerHandler -", idAndExpr)
+
+	if err := manage.ReceiveAnswer(idAndExpr[0], idAndExpr[1]); err != nil {
+		http.Error(w, "Cannot receive answer from agent", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("[GetAnswerHandler]Expression received and processed"))
 }

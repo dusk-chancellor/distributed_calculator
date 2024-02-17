@@ -64,5 +64,16 @@ func SetExpressionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Expression added successfully")) // в хедер - все ок по httpски, в врайтер - все ок по человечески
+	w.Write([]byte("[SetExpressionHandler]Expression added successfully")) // в хедер - все ок по httpски, в врайтер - все ок по человечески
+}
+
+// ClearExpressionsHandler - разом стирает все данные с базы данных (моего json файлика ахахха)
+func ClearExpressionsHandler(w http.ResponseWriter, r *http.Request) {
+	err := storage.ClearExpressionsList() // взял и стер
+	if err != nil {
+		http.Error(w, "Could not clear expressions list", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Write([]byte("Expressions list cleared successfully")) // все четко
 }
