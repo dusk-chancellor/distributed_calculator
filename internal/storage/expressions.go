@@ -31,27 +31,14 @@ func NewExpressionsList() *Expressions {
 	return &Expressions{Expressions: []*Expression{}}
 }
 
-func SetNewExpression(expr string) error {
+func SetNewExpression(expr string) (string, error) {
 	exprs, err := getFromExpressionsFile(expressionsFile)
 	if err != nil {
 		logger.Printf("Cannot getFromExpressionsFile: %s", err)
-		return err
+		return "", err
 	}
 	var newExpr Expression
-	for _, ch := range expr {
-		if ch >= '9' && ch <= '0' && (ch != '+' && ch != '-' && ch != '*' && ch != '/') {
-			logger.Printf("Wrong Expression Format")
-			newExpr = Expression{
-				ID:         "",
-				Expression: expr,
-				Status:     "invalid",
-				Date:       time.Now().String(),
-			}
-			exprs.Expressions = append(exprs.Expressions, &newExpr)
 
-			return saveToFile(expressionsFile, exprs)
-		}
-	}
 	newID := fmt.Sprintf("%d", len(exprs.Expressions)+1)
 
 	newExpr = Expression{
@@ -63,7 +50,7 @@ func SetNewExpression(expr string) error {
 
 	exprs.Expressions = append(exprs.Expressions, &newExpr)
 
-	return saveToFile(expressionsFile, exprs)
+	return newID, saveToFile(expressionsFile, exprs)
 }
 
 func getFromExpressionsFile(fileName string) (*Expressions, error) {

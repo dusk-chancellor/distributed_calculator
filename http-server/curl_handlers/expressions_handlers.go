@@ -3,6 +3,7 @@ package curl_handlers
 import (
 	"calculator_yandex/internal/storage"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -58,13 +59,22 @@ func SetExpressionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := storage.SetNewExpression(expr); err != nil { // добавляем
+	for _, ch := range expr {
+		if ch >= '9' && ch <= '0' && (ch != '+' && ch != '-' && ch != '*' && ch != '/') {
+			http.Error(w, "Invalid expression", http.StatusBadRequest)
+			return
+		}
+	}
+	id, err := storage.SetNewExpression(expr) // добавляем
+
+	if err != nil {
 		http.Error(w, "Could not set new expression", http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("[SetExpressionHandler]Expression added successfully")) // в хедер - все ок по httpски, в врайтер - все ок по человечески
+	success := fmt.Sprintf("Expression added successfully. Its ID is - %s", id)
+	w.Write([]byte(success)) // в хедер - все ок по httpски, в врайтер - все ок по человечески
 }
 
 // ClearExpressionsHandler - разом стирает все данные с базы данных (моего json файлика ахахха)

@@ -9,9 +9,9 @@ import (
 
 func main() {
 	mux := http.NewServeMux() // с mux удобнее
-	mux.HandleFunc("/getexpressionslist", curl_handlers.GetExpressionsHandler)
+	mux.HandleFunc("/getexpressions", curl_handlers.GetExpressionsHandler)
 	mux.HandleFunc("/setnewexpression", curl_handlers.SetExpressionHandler)
-	mux.HandleFunc("/clearexpressionslist", curl_handlers.ClearExpressionsHandler)
+	mux.HandleFunc("/clearexpressions", curl_handlers.ClearExpressionsHandler)
 	mux.HandleFunc("/settimeout", curl_handlers.SetTimeoutsHandler)
 	mux.HandleFunc("/gettimeouts", curl_handlers.GetTimeoutsHandler)
 	mux.HandleFunc("/getanswer", orchestrator_handlers.GetAnswerHandler)
