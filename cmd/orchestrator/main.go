@@ -1,4 +1,4 @@
-// ЮХУУ запускаем client server
+// ЮХУУ запускаем оркестратор
 package main
 
 import (

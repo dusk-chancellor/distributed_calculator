@@ -114,5 +114,5 @@ func GetStoredExpressions() (*Expressions, error) {
 		}
 	}
 
-	return getFromExpressionsFile(expressionsFile)
+	return exprs, nil
 }
