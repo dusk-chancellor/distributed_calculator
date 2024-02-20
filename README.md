@@ -7,9 +7,9 @@
 ## Как запускается и работает?
 * Скачайте файлы с репозитория и поместите в нужную директорию </br>
 * Откройте IDE и запустите проект: </br> </br>
-**Запуск оркестратора**
+**Запуск оркестратора в cmd/orchestrator/main.go**
 ![почему не открывает](pictures/start_orchestrator.png) </br> </br>
-**Запуск агента**
+**Запуск агента в cmd/agent/main.go**
 ![почему не открывает](pictures/start_agent.png) </br> </br>
 * Откройте командную строку для запросов cURL и [примеры работы с cURL](curl_request_examples.txt) </br> </br>
 **Открытие файла [curl_request_examples.txt](curl_request_examples.txt) и cmd в Windows**
