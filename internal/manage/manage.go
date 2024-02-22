@@ -20,7 +20,7 @@ type Expressions struct {
 
 const expressionsFile = "database/expressions.json"
 
-func ReceiveAnswer(id, answer string) error {
+func ReceiveAnswer(id, answer, receivedError string) error {
 	exprs, err := getFromExpressionsFile(expressionsFile)
 	if err != nil {
 		return err
@@ -28,10 +28,14 @@ func ReceiveAnswer(id, answer string) error {
 
 	for _, expr := range exprs.Expressions {
 		if expr.ID == id {
-			expr.Status = "done"
-			expr.Answer = answer
-
-			return saveToFile(expressionsFile, exprs)
+			if receivedError == "error" {
+				expr.Status = "undefined (division by zero)"
+				return saveToFile(expressionsFile, exprs)
+			} else {
+				expr.Status = "done"
+				expr.Answer = answer
+				return saveToFile(expressionsFile, exprs)
+			}
 		}
 	}
 	return err

@@ -21,10 +21,10 @@ func GetAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	idAndExpr := strings.Split(string(body), ":")
-	log.Println("GetAnswerHandler -", idAndExpr)
+	idAndExprAndError := strings.Split(string(body), ":")
+	log.Println("GetAnswerHandler -", idAndExprAndError)
 
-	if err := manage.ReceiveAnswer(idAndExpr[0], idAndExpr[1]); err != nil {
+	if err := manage.ReceiveAnswer(idAndExprAndError[0], idAndExprAndError[1], idAndExprAndError[2]); err != nil {
 		http.Error(w, "Cannot receive answer from agent", http.StatusInternalServerError)
 		return
 	}

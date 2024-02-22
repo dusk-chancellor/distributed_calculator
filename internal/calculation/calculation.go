@@ -11,16 +11,17 @@ import (
 )
 
 func ReceiveAndPost(id, expr string) error {
-	returnID, answer := Evaluate(id, expr)
+	answer, err1 := Evaluate(expr)
+
 	returnAnswer := strconv.FormatFloat(answer, 'g', -1, 64)
-	if err := PostAnswer(returnID + ":" + returnAnswer); err != nil {
-		log.Fatalf("Error sending Post: %v", err)
-		return err
+	if err2 := PostAnswer(id+":"+returnAnswer, err1); err2 != nil {
+		log.Fatalf("Error sending Post: %v", err2)
+		return err2
 	}
 	return nil
 }
 
-func Evaluate(id, expr string) (string, float64) {
+func Evaluate(expr string) (float64, error) {
 	var stack Stack
 	tokens := strings.Split(expr, " ")
 
@@ -29,7 +30,10 @@ func Evaluate(id, expr string) (string, float64) {
 			// если токен - оператор, то забираем 2 последних элемента со стека
 			op1 := stack.Pop()
 			op2 := stack.Pop()
-			ans := Calculate(op1, op2, token)
+			ans, err := Calculate(op1, op2, token)
+			if err != nil {
+				return 0, err
+			}
 			stack.Push(ans)
 		} else {
 			// если токен не оператор - то операнд(число), пушим в стек :)
@@ -39,29 +43,35 @@ func Evaluate(id, expr string) (string, float64) {
 		}
 	}
 	// в этом случае, последний элемент стека и есть наш ответ
-	return id, stack.Pop()
+	return stack.Pop(), nil
 }
 
 // Calculate - вычисляет
-func Calculate(op1, op2 float64, operator string) float64 {
+func Calculate(op1, op2 float64, operator string) (float64, error) {
 	switch operator {
 	case "+":
-		return op2 + op1
+		return op2 + op1, nil
 	case "-":
-		return op2 - op1
+		return op2 - op1, nil
 	case "*":
-		return op2 * op1
+		return op2 * op1, nil
 	case "/":
 		if op1 == 0 {
-			return 0
+			return 0, fmt.Errorf("Division by zero")
 		}
-		return op2 / op1
+		return op2 / op1, nil
+	default:
+		return 0, fmt.Errorf("Unknown operation")
 	}
-	return 0
 }
 
-func PostAnswer(sendingData string) error {
+func PostAnswer(sendingData string, err error) error {
 	fmt.Println("PostAnswer", sendingData)
+	if err != nil {
+		sendingData += ":error"
+	} else {
+		sendingData += ":ok"
+	}
 	req, err := http.NewRequest(
 		http.MethodPost,
 		"http://localhost:8080/getanswer",
