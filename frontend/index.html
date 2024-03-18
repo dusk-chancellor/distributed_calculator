@@ -8,17 +8,19 @@
 </head>
 <body>
     <header>
+        <h1>
         Distributed Calculator
-        <div id="byauthor">
+        </h1>
+        <h5>
             by duskchancellor
-        </div>
+        </h5>
     </header>
     <main>
-        <form>
+        <form id="expressionInput">
             <label for="expressionInput">Enter expression:</label>
-            <input type="text" id="expressionInput" name="expression"
+            <input type="text" name="expression"
                 placeholder="e.g. '2+2*2'" required>
-            <button type="submit">Submit</button>
+            <button type="submit">Send</button>
         </form>
         <div id="savedExpressions"></div>
     </main>
