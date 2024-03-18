@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #FFFFFF;
+}
+
+header {
+    width: 100%;
+    background-color: #191970;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 36px;
+}
+
+#byauthor {
+    font-size: 12px;
+}
+
+#expressionInput {
+    font-size: 15px;
+    margin-top: 20px;
+    padding: 5px; 
+    border: 2px solid #FFFFFF; 
+    border-radius: 10px; 
+    outline: none; 
+    transition: border-color 0.3s ease; 
+}
+
+#expressionInput:focus {
+    border-color: #FF4500;
+}

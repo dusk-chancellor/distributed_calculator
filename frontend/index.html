@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        Distributed Calculator
+        <div id="byauthor">
+            by duskchancellor
+        </div>
+    </header>
+    <main>
+        <form>
+            <label for="expressionInput">Enter expression:</label>
+            <input type="text" id="expressionInput" name="expression"
+                placeholder="e.g. '2+2*2'" required>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="savedExpressions"></div>
+    </main>
+    <script src="script.js"></script> 
+</body>
+</html>
