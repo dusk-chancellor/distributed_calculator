@@ -8,12 +8,10 @@
 </head>
 <body>
     <header>
-        <h1>
         Distributed Calculator
-        </h1>
-        <h5>
-            by duskchancellor
-        </h5>
+        <div>
+            by <a href="https://duskchancellor.taplink.ws"><u>dusk chancellor</u></a>
+        </div>
     </header>
     <main>
         <form id="expressionInput">
@@ -22,7 +20,11 @@
                 placeholder="e.g. '2+2*2'" required>
             <button type="submit">Send</button>
         </form>
-        <div id="savedExpressions"></div>
+        <div id="savedExpressions">
+            <p>
+                Expressions List
+            </p>
+        </div>
     </main>
     <script src="script.js"></script> 
 </body>
