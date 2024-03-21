@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const expression = form.elements.expression.value; // Get the expression from the input
 
         // Send the expression to the backend
-        fetch('http://localhost:8080/sendexpression', {
+        fetch('http://localhost:8080/expressions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
