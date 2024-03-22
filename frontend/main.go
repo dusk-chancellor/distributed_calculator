@@ -14,6 +14,7 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -76,6 +77,24 @@ func (es *expressionServer) getAllExpressionsHandler(w http.ResponseWriter, r *h
 	w.Write(jsoned)
 }
 
+func (es *expressionServer) deleteExpressionHandler(w http.ResponseWriter, r *http.Request) {
+	log.Printf("handling delete expression on %s\n", r.URL.Path)
+
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil {
+		log.Printf("Not appropriate id: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = es.store.DeleteExpression(id)
+	if err != nil {
+		log.Printf("Not deleted: %v", err)
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+}
+
 func main() {
 	mux := http.NewServeMux()
 	server := NewExprServer()
@@ -84,6 +103,7 @@ func main() {
 
 	mux.HandleFunc("POST /expression/", server.setExpressionHandler)
 	mux.HandleFunc("GET /expression/", server.getAllExpressionsHandler)
+	mux.HandleFunc("DELETE /expression/{id}", server.deleteExpressionHandler)
 
 	fmt.Println("Server is running on port 8080...")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
