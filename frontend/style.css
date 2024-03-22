@@ -121,7 +121,7 @@ main {
     color: white; /* White text */
     border: none; /* No border */
     padding: 10px 20px; /* Padding around the text */
-    margin-top: 10px; /* Margin at the top to separate it from the expression */
+    margin-left: 10px;
     cursor: pointer; /* Cursor changes to a pointer when hovering */
     border-radius: 5px; /* Rounded corners */
     transition: background-color 0.5s ease; /* Smooth transition for background color */
