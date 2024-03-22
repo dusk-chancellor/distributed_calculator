@@ -115,3 +115,24 @@ main {
     color: #FFFFFF; /* White color for contrast */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
 }
+
+#savedExpressions button {
+    background-color: #FF4136; /* Red background */
+    color: white; /* White text */
+    border: none; /* No border */
+    padding: 10px 20px; /* Padding around the text */
+    margin-top: 10px; /* Margin at the top to separate it from the expression */
+    cursor: pointer; /* Cursor changes to a pointer when hovering */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.5s ease; /* Smooth transition for background color */
+}
+
+#savedExpressions button:hover {
+    background-color: #FF6347; /* Darker red on hover */
+}
+
+#savedExpressions button:active {
+    background-color: #FF4136; /* Slightly darker red when clicked */
+    box-shadow: 0 3px #666; /* Shadow effect */
+    transform: translateY(3px); /* Slight upward movement */
+}

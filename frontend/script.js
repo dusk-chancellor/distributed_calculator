@@ -54,6 +54,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 Date: ${expression.date},
                 Status: ${expression.status}`;
             expressionsDiv.appendChild(p);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.addEventListener('click', function() {
+                // Implement the deletion logic here
+                // For example, send a DELETE request to the backend
+                fetch(`http://localhost:8080/expression/${expression.id}`, {
+                    method: 'DELETE',
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    // Optionally, remove the expression from the UI
+                    expressionsDiv.removeChild(p);
+                    expressionsDiv.removeChild(deleteButton);
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+            });
+
+            expressionsDiv.appendChild(deleteButton);
         });
     })
     .catch(error => {
