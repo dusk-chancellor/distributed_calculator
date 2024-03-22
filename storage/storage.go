@@ -77,6 +77,7 @@ func (e *ExpressionStore) DeleteExpression(id int) error {
 	}
 
 	delete(e.exprs, id)
+	log.Print("Expression deleted")
 	return nil
 }
 

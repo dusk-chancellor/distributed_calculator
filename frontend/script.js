@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('There has been a problem with your fetch operation:', error);
                 });
             });
-
             expressionsDiv.appendChild(deleteButton);
         });
     })
