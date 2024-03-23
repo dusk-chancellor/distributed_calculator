@@ -25,9 +25,13 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Success:', data);
+
+            form.elements.expression.value = '';
         })
         .catch((error) => {
             console.error('Error:', error);
+
+            form.elements.expression.value = '';
         });
     });
 });
@@ -56,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
             expressionsDiv.appendChild(p);
 
             const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
+            deleteButton.textContent = 'DELETE';
             deleteButton.addEventListener('click', function() {
                 // Implement the deletion logic here
                 // For example, send a DELETE request to the backend
