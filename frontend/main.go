@@ -1,21 +1,14 @@
 package main
 
-// TODO: REST API
-// [ ] POST   /expressions/    - creates an expression, an id for it and saves it
-// [ ] GET    /expressions/    - returns a list of all expressions
-// [ ] GET    /expressions/:id - returns specific expression with specified id
-// [ ] DELETE /expressions/    - deletes all expressions
-// [ ] DELETE /expressions/:id - deletes expression by its id
-
 import (
-	"calculator_yandex/storage"
-	"encoding/json"
 	"fmt"
+	"net/http"
+	"calculator_yandex/storage"
+	"time"
 	"log"
 	"mime"
-	"net/http"
+	"encoding/json"
 	"strconv"
-	"time"
 )
 
 type expressionServer struct {
@@ -28,7 +21,7 @@ func NewExprServer() *expressionServer {
 	}
 }
 
-func (es *expressionServer) setExpressionHandler(w http.ResponseWriter, r *http.Request) {
+func (es *expressionServer) SetExpressionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handling expression set on %s\n", r.URL.Path)
 	date := time.Now()
 
@@ -63,7 +56,7 @@ func (es *expressionServer) setExpressionHandler(w http.ResponseWriter, r *http.
 	w.WriteHeader(http.StatusOK)
 }
 
-func (es *expressionServer) getAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
+func (es *expressionServer) GetAllExpressionsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handling get all expressions on %s\n", r.URL.Path)
 
 	allExprs := es.store.GetAllExpressions()
@@ -77,7 +70,7 @@ func (es *expressionServer) getAllExpressionsHandler(w http.ResponseWriter, r *h
 	w.Write(jsoned)
 }
 
-func (es *expressionServer) deleteExpressionHandler(w http.ResponseWriter, r *http.Request) {
+func (es *expressionServer) DeleteExpressionHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("handling delete expression on %s\n", r.URL.Path)
 
 	id, err := strconv.Atoi(r.PathValue("id"))
@@ -95,15 +88,23 @@ func (es *expressionServer) deleteExpressionHandler(w http.ResponseWriter, r *ht
 	}
 }
 
+// TODO: REST API
+// [x] POST         /expressions/    - creates an expression, an id for it and saves it
+// [x] GET          /expressions/    - returns a list of all expressions
+// [ ] GET          /expressions/:id - returns specific expression with specified id
+// [ ] DELETE       /expressions/    - deletes all expressions
+// [x] DELETE       /expressions/:id - deletes expression by its id
+// [ ] POST(UPDATE) /expressions/:id - updates expression properties
+
 func main() {
 	mux := http.NewServeMux()
 	server := NewExprServer()
 
 	mux.Handle("/", http.FileServer(http.Dir(".")))
 
-	mux.HandleFunc("POST /expression/", server.setExpressionHandler)
-	mux.HandleFunc("GET /expression/", server.getAllExpressionsHandler)
-	mux.HandleFunc("DELETE /expression/{id}", server.deleteExpressionHandler)
+	mux.HandleFunc("POST /expression/", server.SetExpressionHandler)
+	mux.HandleFunc("GET /expression/", server.GetAllExpressionsHandler)
+	mux.HandleFunc("DELETE /expression/{id}", server.DeleteExpressionHandler)
 
 	fmt.Println("Server is running on port 8080...")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
