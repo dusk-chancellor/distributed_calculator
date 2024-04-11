@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const expression = form.elements.expression.value; // Get the expression from the input
 
         // Send the expression to the backend
-        fetch('http://localhost:8000/expression/', {
+        fetch('http://localhost:8080/expression/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('http://localhost:8000/expression/', {
+    fetch('http://localhost:8080/expression/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -50,11 +50,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return response.json();
     })
     .then(data => {
+        console.log('Received:', data)
         const expressionsDiv = document.getElementById('savedExpressions');
         data.forEach(expression => {
             const p = document.createElement('p');
             p.textContent = `ID: ${expression.id},
                 Expression: ${expression.expression},
+                Answer: ${expression.answer},
                 Date: ${expression.date},
                 Status: ${expression.status}`;
             expressionsDiv.appendChild(p);
@@ -64,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             deleteButton.addEventListener('click', function() {
                 // Implement the deletion logic here
                 // For example, send a DELETE request to the backend
-                fetch(`http://localhost:8000/expression/${expression.id}`, {
+                fetch(`http://localhost:8080/expression/${expression.id}`, {
                     method: 'DELETE',
                 })
                 .then(response => {
