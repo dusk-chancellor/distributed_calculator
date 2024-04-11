@@ -10,18 +10,16 @@ type Expression struct {
 	Expression string
 	Answer 	   string
 	Date 	   string
-	Status 	   string
+	Status 	   string // Types: stored, processing, done, error
 }
-
-// Status types: stored, processing, done, error
 
 func (s *Storage) InsertExpression(ctx context.Context, expr *Expression) (int64, error) {
 
 	var q = `
-	INSERT INTO expressions (userid, expression, date, status) values ($1, $2, $3, $4)
+	INSERT INTO expressions (userid, expression, answer, date, status) values ($1, $2, $3, $4, $5)
 	`
 	
-	res, err := s.db.ExecContext(ctx, q, expr.UserID, expr.Expression, expr.Date, expr.Status)
+	res, err := s.db.ExecContext(ctx, q, expr.UserID, expr.Expression, "null", expr.Date, expr.Status)
 	if err != nil {
 		return 0, err
 	}
@@ -34,14 +32,14 @@ func (s *Storage) InsertExpression(ctx context.Context, expr *Expression) (int64
 	return id, nil
 }
 
-func (s *Storage) SelectExpressions(ctx context.Context, userID int64) ([]Expression, error) {
+func (s *Storage) SelectExpressions(ctx context.Context) ([]Expression, error) {
 
 	var (
 		expressions []Expression
-		q = `SELECT id, expression, answer, date, status FROM expressions WHERE userid = $1`
+		q = `SELECT id, expression, answer, date, status FROM expressions`
 	)
 
-	rows, err := s.db.QueryContext(ctx, q, userID)
+	rows, err := s.db.QueryContext(ctx, q)
 	if err != nil {
 		return nil, err
 	}
