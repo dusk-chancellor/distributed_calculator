@@ -4,21 +4,24 @@ import (
 	"context"
 )
 
+// Model methods for expressions table in database
+
 type Expression struct {
-	ID 		   int64
-	UserID 	   int64
+	ID         int64
+	UserID     int64
 	Expression string
-	Answer 	   string
-	Date 	   string
-	Status 	   string // Types: stored, processing, done, error
+	Answer     string // Types: null, {answer}, error
+	Date       string
+	Status     string // Types: stored, processing, done, error
 }
 
+// InsertExpression - putting new expression into database table
 func (s *Storage) InsertExpression(ctx context.Context, expr *Expression) (int64, error) {
 
 	var q = `
 	INSERT INTO expressions (userid, expression, answer, date, status) values ($1, $2, $3, $4, $5)
 	`
-	
+
 	res, err := s.db.ExecContext(ctx, q, expr.UserID, expr.Expression, "null", expr.Date, expr.Status)
 	if err != nil {
 		return 0, err
@@ -32,11 +35,12 @@ func (s *Storage) InsertExpression(ctx context.Context, expr *Expression) (int64
 	return id, nil
 }
 
+// SelectExpressions - returns all expressions slice from database table
 func (s *Storage) SelectExpressions(ctx context.Context) ([]Expression, error) {
 
 	var (
 		expressions []Expression
-		q = `SELECT id, expression, answer, date, status FROM expressions`
+		q           = `SELECT id, expression, answer, date, status FROM expressions`
 	)
 
 	rows, err := s.db.QueryContext(ctx, q)
@@ -58,6 +62,7 @@ func (s *Storage) SelectExpressions(ctx context.Context) ([]Expression, error) {
 	return expressions, nil
 }
 
+// SelectExpressionByID - guess yourself :)
 func (s *Storage) SelectExpressionByID(ctx context.Context, userID int64, id int64) (Expression, error) {
 
 	e := Expression{}
@@ -71,9 +76,10 @@ func (s *Storage) SelectExpressionByID(ctx context.Context, userID int64, id int
 	return e, nil
 }
 
+// UpdateExpression - updates data about expression, specifically its answer and/or status
 func (s *Storage) UpdateExpression(
 	ctx context.Context, answer, status string, id int64,
-	) error {
+) error {
 
 	var q = `UPDATE expressions SET answer = $1, status = $2 WHERE id = $3`
 
@@ -85,6 +91,7 @@ func (s *Storage) UpdateExpression(
 	return nil
 }
 
+// DeleteExpression - deletes expression row from database table
 func (s *Storage) DeleteExpression(ctx context.Context, id int64) error {
 
 	var q = `DELETE FROM expressions WHERE id = ?`
