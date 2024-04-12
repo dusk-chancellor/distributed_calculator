@@ -7,8 +7,11 @@ import (
 	"log"
 	"mime"
 	"net/http"
+	"strconv"
 	"time"
 )
+
+// Handlers for operations with expressions
 
 type Request struct {
 	Expression string `json:"expression"`
@@ -22,11 +25,13 @@ type ResponseData struct {
 	Status 	   string `json:"status"`
 }
 
-type ExpressionSaver interface {
+type ExpressionSaver interface { // Methods for interactions with database
 	InsertExpression(ctx context.Context, expr *storage.Expression) (int64, error)
 	SelectExpressions(ctx context.Context) ([]storage.Expression, error)
+	DeleteExpression(ctx context.Context, id int64) error
 }
 
+// CreateExpressionHandler - post method handler which stores an expression
 func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSaver) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -72,6 +77,7 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSave
 	}	
 }
 
+// GetExpressionHandler - get method handler which writes all expressions from database
 func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionSaver) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -106,5 +112,25 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionSaver)
 		w.Write(jsonData)
 
 		log.Print("Successful GetExpressionsHandler operation")
+	}
+}
+
+// DeleteExpressionHandler
+func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionSaver) http.HandlerFunc {
+	
+	return func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.Atoi(r.PathValue("id"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		err = expressionSaver.DeleteExpression(ctx, int64(id))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		log.Print("Successful DeleteExpressionHandler operation")
 	}
 }

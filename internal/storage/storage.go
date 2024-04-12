@@ -8,12 +8,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// Model functions for initializing database and its tables
+
 type Storage struct {
 	db *sql.DB
 }
 
+// New - creates new database in the given storagePath with tables
 func New(storagePath string) (*Storage, error) {
-	const op = "storage.sqlite.New"
+	const op = "storage/storage-New"
 	ctx := context.TODO()
 
 	db, err := sql.Open("sqlite3", storagePath)
@@ -26,14 +29,15 @@ func New(storagePath string) (*Storage, error) {
 		return nil, fmt.Errorf("%s: %v", op, err)
 	}
 
-	if err = CreateTables(ctx, db); err != nil {
+	if err = createTables(ctx, db); err != nil {
 		return nil, fmt.Errorf("%s: %v", op, err)
 	}
 
 	return &Storage{db: db}, nil
 }
 
-func CreateTables(ctx context.Context, db *sql.DB) error {
+// createTables - pops up two tables in the given database
+func createTables(ctx context.Context, db *sql.DB) error {
 	const (
 		usersTable = `
 			CREATE TABLE IF NOT EXISTS users(
@@ -45,13 +49,13 @@ func CreateTables(ctx context.Context, db *sql.DB) error {
 		expressionsTable = `
 			CREATE TABLE IF NOT EXISTS expressions(
 				id 		   INTEGER PRIMARY KEY AUTOINCREMENT,
-				userid 	   INTEGER,
+				user_id 	   INTEGER,
 				expression TEXT NOT NULL,
 				answer 	   TEXT,
 				date 	   TEXT,
 				status 	   TEXT,
 
-				FOREIGN KEY (userid) REFERENCES users(id)
+				FOREIGN KEY (user_id) REFERENCES users(id)
 			);`
 	)
 
