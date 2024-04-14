@@ -1,11 +1,13 @@
 package main
 
 import (
-	exprHandler "calculator_yandex/internal/http_server/handlers/expression"
-	"calculator_yandex/internal/storage"
 	"context"
 	"log"
 	"net/http"
+
+	exprHandler "github.com/dusk-chancellor/distributed_calculator/internal/http_server/handlers/expression"
+	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
+	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/manager"
 )
 
 // Orchestrator - the main app server, which directly operates with database
@@ -18,7 +20,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	addr := "localhost:8080" // must be in config file
 
 	mux := http.NewServeMux()
@@ -29,11 +31,13 @@ func main() {
 	mux.Handle("DELETE /expression/{id}/", exprHandler.DeleteExpressionHandler(ctx, db))
 
 	server := &http.Server{
-		Addr: addr,
+		Addr:    addr,
 		Handler: mux,
 	}
 
-	log.Printf("Orchestrator started at %s", addr)
+	go manager.RunManager(ctx, db)
+
+	log.Printf("Running Orchestrator server at %s", addr)
 	if err := server.ListenAndServe(); err != nil {
 		log.Printf("error: %v", err)
 	}

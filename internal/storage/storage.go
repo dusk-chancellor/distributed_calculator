@@ -49,13 +49,13 @@ func createTables(ctx context.Context, db *sql.DB) error {
 		expressionsTable = `
 			CREATE TABLE IF NOT EXISTS expressions(
 				id 		   INTEGER PRIMARY KEY AUTOINCREMENT,
-				user_id 	   INTEGER,
+				userid 	   INTEGER,
 				expression TEXT NOT NULL,
 				answer 	   TEXT,
 				date 	   TEXT,
 				status 	   TEXT,
 
-				FOREIGN KEY (user_id) REFERENCES users(id)
+				FOREIGN KEY (userid) REFERENCES users(id)
 			);`
 	)
 

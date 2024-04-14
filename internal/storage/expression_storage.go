@@ -10,9 +10,9 @@ type Expression struct {
 	ID         int64
 	UserID     int64
 	Expression string
-	Answer     string // Types: null, {answer}, error
+	Answer     string // Types: null, {answer}
 	Date       string
-	Status     string // Types: stored, processing, done, error
+	Status     string // Types: stored, done, error
 }
 
 // InsertExpression - putting new expression into database table
@@ -22,7 +22,7 @@ func (s *Storage) InsertExpression(ctx context.Context, expr *Expression) (int64
 	INSERT INTO expressions (userid, expression, answer, date, status) values ($1, $2, $3, $4, $5)
 	`
 
-	res, err := s.db.ExecContext(ctx, q, expr.UserID, expr.Expression, "null", expr.Date, expr.Status)
+	res, err := s.db.ExecContext(ctx, q, expr.UserID, expr.Expression, expr.Answer, expr.Date, expr.Status)
 	if err != nil {
 		return 0, err
 	}
