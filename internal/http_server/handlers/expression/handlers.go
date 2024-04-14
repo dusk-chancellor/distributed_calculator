@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"calculator_yandex/internal/storage"
+	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 	"context"
 	"encoding/json"
 	"log"
@@ -60,6 +60,7 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSave
 
 		var expressionStruct = storage.Expression{
 			Expression: req.Expression,
+			Answer: "null",
 			Date: date.Format("2006/01/02 15:04:05"),
 			Status: "stored",
 		}

@@ -1,0 +1,15 @@
+syntax = "proto3"; 
+package agent; 
+option go_package = "github.com/dusk-chancellor/distributed_calculator/proto";
+
+message ExpressionRequest {
+    string expression = 1;
+}
+
+message ExpressionResponse {
+    double result = 1;
+}
+
+service CalculatorService {
+    rpc Calculate (ExpressionRequest) returns (ExpressionResponse);
+}
