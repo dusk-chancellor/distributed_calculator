@@ -23,23 +23,26 @@ var (
 )
 
 func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater) {
-	log.Println("running orchestrator manager")
+	
+	log.Println("Running Orchestrator manager")
 	for {
-		storedExpressions, err := expressionUpdater.SelectExpressions(ctx)
-		if err != nil {
-			log.Printf("could not SelectExpressions() from database: %v", err)
-		}
 		go func() {
+			storedExpressions, err := expressionUpdater.SelectExpressions(ctx)
+			if err != nil {
+				log.Printf("could not SelectExpressions() from database: %v", err)
+			}
+
 			for _, expression := range storedExpressions {
-				if expression.Status == done {
+				if expression.Status == done || expression.Status == trouble {
 					continue
 				} else {
 					ans, err := orchestrator.Calculate(ctx, expression.Expression)
 					if err != nil {
 						log.Printf("could not Calculate(): %v", err)
-						_ = expressionUpdater.UpdateExpression(
+						expressionUpdater.UpdateExpression(
 							ctx, null, trouble, expression.ID,
 						)
+						continue
 					}
 
 					res := strconv.FormatFloat(ans, 'g', -1, 64)

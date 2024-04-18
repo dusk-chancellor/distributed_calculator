@@ -1,0 +1,46 @@
+body {
+    background-color: rgb(31, 28, 28);
+    font-family: Verdana, Tahoma, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100vh;
+    margin: 0;
+}
+.container {
+    color: lavenderblush;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 350px;
+}
+
+.container input {
+    background-color: lavenderblush;
+    border: 2px solid #ccc;
+    width: 100%;
+    max-width: 287px;
+    padding: 8px;
+    border-radius: 3px;
+}
+.container label {
+    display: block;
+    margin-bottom: 5px;
+}
+.container button {
+    background-color: blueviolet;
+    color: lavenderblush;
+    border: none;
+    cursor: pointer;
+    width: 150px;
+    height: 30px;
+    margin-top: 3px;
+}
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}

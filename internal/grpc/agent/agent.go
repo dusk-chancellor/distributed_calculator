@@ -9,6 +9,7 @@ import (
 
 	"github.com/dusk-chancellor/distributed_calculator/internal/utils/agent/calculation"
 	itp "github.com/dusk-chancellor/distributed_calculator/internal/utils/agent/infix_to_postfix"
+	"github.com/dusk-chancellor/distributed_calculator/internal/utils/agent/validator"
 	pb "github.com/dusk-chancellor/distributed_calculator/proto"
 	"google.golang.org/grpc"
 )
@@ -27,6 +28,9 @@ type CalculatorServiceServer interface {
 }
 
 func (s *Server) Calculate(ctx context.Context, in *pb.ExpressionRequest) (*pb.ExpressionResponse, error) {
+	if !validator.IsValidExpression(in.Expression) {
+		return nil, fmt.Errorf("invalid expression: %s", in.Expression)
+	}
 	postfixed := itp.ToPostfix(in.Expression)
 	res, err := calculation.Evaluate(postfixed)
 	if err != nil {

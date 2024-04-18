@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 	"context"
 	"encoding/json"
 	"log"
-	"mime"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 )
 
 // Handlers for operations with expressions
@@ -37,18 +37,6 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSave
 	return func(w http.ResponseWriter, r *http.Request) {
 		date := time.Now()
 
-		contentType := r.Header.Get("Content-Type")
-
-		mediaType, _, err := mime.ParseMediaType(contentType)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		if mediaType != "application/json" {
-			http.Error(w, "expected Content-Type to be application/json", http.StatusUnsupportedMediaType)
-			return
-		}
-
 		jsonDec := json.NewDecoder(r.Body)
 		jsonDec.DisallowUnknownFields()
 
@@ -75,7 +63,7 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSave
 		w.Header().Set("Content-Type", "application/json")
 
 		log.Printf("Successful CreateExpressionHandler operation; id = %d", id)
-	}	
+	}
 }
 
 // GetExpressionHandler - get method handler which writes all expressions from database

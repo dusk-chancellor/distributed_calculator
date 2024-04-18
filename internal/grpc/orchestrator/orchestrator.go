@@ -3,7 +3,6 @@ package orchestrator
 import (
 	"context"
 	"log"
-	"time"
 
 	pb "github.com/dusk-chancellor/distributed_calculator/proto"
 	"google.golang.org/grpc"
@@ -32,10 +31,8 @@ func Calculate(ctx context.Context, expr string) (float64, error) {
 
 	ans1, err := grpcClient.Calculate(ctx, &pb.ExpressionRequest{Expression: expr})
 	if err != nil {
-		log.Println("failed:", err)
 		return 0, err
 	}
 
-	time.Sleep(3 * time.Second)
 	return ans1.Result, nil
 }

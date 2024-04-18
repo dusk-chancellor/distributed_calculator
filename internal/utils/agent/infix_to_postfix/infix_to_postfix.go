@@ -5,35 +5,7 @@ import (
 
 )
 
-// IsOperator проверка на + - * /
-func IsOperator(c uint8) bool {
-	return strings.ContainsAny(string(c), "+ & - & * & /")
-}
-
-// IsOperand проверка на цифры
-func IsOperand(c uint8) bool {
-	return c >= '0' && c <= '9'
-}
-
-// Precedence для определения порядка выполнения арифметических действий
-func Precedence(op string) int {
-	switch op {
-	case "+", "-":
-		return 1
-	case "*", "/":
-		return 2
-	}
-	return -1
-}
-
-// HasHigherPrecedence определяет какая из операций имеет высший приоритет
-func HasHigherPrecedence(op1, op2 string) bool {
-	op1Prec := Precedence(op1)
-	op2Prec := Precedence(op2)
-	return op1Prec >= op2Prec
-}
-
-// ToPostfix - наконец функция превращающая обычные выражения в постфиксную запись
+// ToPostfix - функция превращающая обычные выражения в постфиксную запись
 // например: принимает s = "2+ 2 *2" -> возвращает "2 2 2 * +"
 // с пробелами для того, чтобы можно было значения больше 9 тоже считать
 func ToPostfix(s string) string {
@@ -90,4 +62,32 @@ func ToPostfix(s string) string {
 		postfix += " " + str
 	}
 	return strings.TrimSpace(postfix) // чтобы           вот таких пробелов не было в начале и конце
+}
+
+// IsOperator проверка на + - * /
+func IsOperator(c uint8) bool {
+	return strings.ContainsAny(string(c), "+ & - & * & /")
+}
+
+// IsOperand проверка на цифры
+func IsOperand(c uint8) bool {
+	return c >= '0' && c <= '9'
+}
+
+// Precedence для определения порядка выполнения арифметических действий
+func Precedence(op string) int {
+	switch op {
+	case "+", "-":
+		return 1
+	case "*", "/":
+		return 2
+	}
+	return -1
+}
+
+// HasHigherPrecedence определяет какая из операций имеет высший приоритет
+func HasHigherPrecedence(op1, op2 string) bool {
+	op1Prec := Precedence(op1)
+	op2Prec := Precedence(op2)
+	return op1Prec >= op2Prec
 }

@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	exprHandler "github.com/dusk-chancellor/distributed_calculator/internal/http_server/handlers/expression"
+	exprHandler "github.com/dusk-chancellor/distributed_calculator/internal/http/handlers/expression"
 	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/manager"
 )
