@@ -55,7 +55,7 @@ func createTables(ctx context.Context, db *sql.DB) error {
 				date 	   TEXT,
 				status 	   TEXT,
 
-				FOREIGN KEY (userid) REFERENCES users(id)
+				FOREIGN KEY (userid) REFERENCES users (id)
 			);`
 	)
 

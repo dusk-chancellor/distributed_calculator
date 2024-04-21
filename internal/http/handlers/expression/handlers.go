@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
+	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/jwts"
 )
 
 // Handlers for operations with expressions
@@ -27,18 +28,22 @@ type ResponseData struct {
 
 type ExpressionInteractor interface { // Methods for interactions with database
 	InsertExpression(ctx context.Context, expr *storage.Expression) (int64, error)
-	SelectExpressions(ctx context.Context) ([]storage.Expression, error)
+	SelectExpressionsByID(ctx context.Context, userID int64) ([]storage.Expression, error)
 	DeleteExpression(ctx context.Context, id int64) error
 }
+
+type contextKey string
+const UserIDKey contextKey = "userid"
 
 // CreateExpressionHandler - post method handler which stores an expression
 func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
 		date := time.Now()
 
 		jsonDec := json.NewDecoder(r.Body)
-		jsonDec.DisallowUnknownFields()
 
 		var req Request
 		if err := jsonDec.Decode(&req); err != nil {
@@ -46,7 +51,30 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 			return
 		}
 
+		cookie, err := r.Cookie("auth_token")
+		if err != nil {
+			http.Redirect(w, r, "/auth", http.StatusSeeOther)
+			log.Printf("no cookie found")
+			return
+		}
+
+		tokenString := cookie.Value
+
+		tokenValue, err := jwts.VerifyJWTToken(tokenString)
+		if err != nil {
+			http.Redirect(w, r, "/auth", http.StatusSeeOther)
+			log.Printf("error: %v", err)
+			return
+		}
+		userID, err := strconv.ParseInt(tokenValue, 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Printf("error: %v", err)
+			return
+		}
+
 		var expressionStruct = storage.Expression{
+			UserID: userID,
 			Expression: req.Expression,
 			Answer: "null",
 			Date: date.Format("2006/01/02 15:04:05"),
@@ -60,8 +88,6 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 		}
 
 		w.WriteHeader(http.StatusCreated)
-		w.Header().Set("Content-Type", "application/json")
-
 		log.Printf("Successful CreateExpressionHandler operation; id = %d", id)
 	}
 }
@@ -70,7 +96,31 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		allExpressions, err := expressionSaver.SelectExpressions(ctx)
+		w.Header().Set("Content-Type", "application/json")
+
+		cookie, err := r.Cookie("auth_token")
+		if err != nil {
+			http.Redirect(w, r, "/auth", http.StatusSeeOther)
+			log.Printf("no cookie found")
+			return
+		}
+
+		tokenString := cookie.Value
+
+		tokenValue, err := jwts.VerifyJWTToken(tokenString)
+		if err != nil {
+			http.Redirect(w, r, "/auth", http.StatusSeeOther)
+			log.Printf("error: %v", err)
+			return
+		}
+		userID, err := strconv.ParseInt(tokenValue, 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Printf("error: %v", err)
+			return
+		}
+
+		allExpressions, err := expressionSaver.SelectExpressionsByID(ctx, userID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -90,16 +140,8 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionIntera
 			respData = append(respData, resp)
 		}
 
-		jsonData, err := json.Marshal(respData)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 
-		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(jsonData)
-
+		json.NewEncoder(w).Encode(respData)
 		log.Print("Successful GetExpressionsHandler operation")
 	}
 }
@@ -120,6 +162,7 @@ func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 			return
 		}
 
+		w.WriteHeader(http.StatusAccepted)
 		log.Print("Successful DeleteExpressionHandler operation")
 	}
 }

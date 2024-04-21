@@ -12,7 +12,7 @@ import (
 
 type ExpressionUpdater interface {
 	UpdateExpression(ctx context.Context, answer, status string, id int64,) error
-	SelectExpressions(ctx context.Context) ([]storage.Expression, error)
+	SelectAllExpressions(ctx context.Context) ([]storage.Expression, error)
 }
 
 // all this states must be somewhere else than here
@@ -24,10 +24,10 @@ var (
 
 func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater) {
 	
-	log.Println("Running Orchestrator manager")
+	log.Println("running Orchestrator manager")
 	for {
 		go func() {
-			storedExpressions, err := expressionUpdater.SelectExpressions(ctx)
+			storedExpressions, err := expressionUpdater.SelectAllExpressions(ctx)
 			if err != nil {
 				log.Printf("could not SelectExpressions() from database: %v", err)
 			}

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
 
             // Send the signup request
-            fetch('http://localhost:8080/signup/', {
+            fetch('http://localhost:8080/auth/signup/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -23,16 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                if (response.headers.get('Content-Type') !== 'application/json') {
-                    throw new Error('Response is not JSON');
-                }
                 return response.json();
             })
             .then(data => {
                 // Handle the response, e.g., show a success message or redirect the user
                 console.log('Signup successful:', data);
-                // Optionally, redirect the user to a different page
-                // window.location.href = '/dashboard';
                 authForm.elements.username.value = '';
                 authForm.elements.password.value = '';
             })
@@ -44,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
 
             // Send the login request
-            fetch('http://localhost:8080/login/', {
+            fetch('http://localhost:8080/auth/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,23 +51,29 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    console.error('Response status:', response.status)
+                    return response.text().then(text => {
+                        throw new Error('Network response was not ok: ' + text);
+                    });
                 }
-                if (response.headers.get('Content-Type') !== 'application/json') {
-                    throw new Error('Response is not JSON');
+
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    // Redirect to the home page
+                    window.location.href = "http://localhost:8080/";
+                    return; // Exit the promise chain
                 }
                 return response.json();
             })
             .then(data => {
-                // Store the token in local storage
-                localStorage.setItem('token', data.token);
                 console.log('Login successful, token stored.');
-                // Optionally, redirect the user to a different page
-                // window.location.href = '/dashboard';
                 authForm.elements.username.value = '';
                 authForm.elements.password.value = '';
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => { 
+                console.error('Error:', error);
+                //alert('Login failed: ' + error.message);
+            });
         }
     });
 });

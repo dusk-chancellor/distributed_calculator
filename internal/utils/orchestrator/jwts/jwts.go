@@ -11,14 +11,15 @@ import (
 var secretKey = os.Getenv("JWT_SECRET_KEY")
 
 // GenerateJWTToken generates a new jwt token for user
-func GenerateJWTToken(uname string) (string, error) {
+func GenerateJWTToken(userID int64) (string, error) {
 
 	now := time.Now()
+	userIDStr := fmt.Sprintf("%d", userID)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"name": uname,
+		"userid": userIDStr,
 		"iat": now.Unix(),
-		"nbf": now.Add(3 * time.Second).Unix(),
-		"exp": now.Add(time.Hour).Unix(),
+		"nbf": now.Unix(),
+		"exp": now.Add(3 * time.Minute).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(secretKey))
@@ -30,22 +31,26 @@ func GenerateJWTToken(uname string) (string, error) {
 }
 
 // VerifyJWTToken verifies jwt token (used in middleware)
-func VerifyJWTToken(tokenString string) (jwt.MapClaims, error) {
+func VerifyJWTToken(tokenString string) (string, error) {
 
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+			return "", fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
 		}
 
 		return []byte(secretKey), nil
 	})
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims, nil
+		userID, ok := claims["userid"].(string)
+		if !ok {
+			return "", fmt.Errorf("invalid userID type")
+		}
+		return userID, nil
 	} 
 
-	return nil, fmt.Errorf("invalid token")
+	return "", fmt.Errorf("invalid token")
 }

@@ -1,16 +1,3 @@
-// Function to include JWT token in requests
-function fetchWithToken(url, options = {}) {
-    // Retrieve the token from local storage
-    const token = localStorage.getItem('token');
-
-    // Add the token to the Authorization header
-    options.headers = options.headers || {};
-    options.headers['Authorization'] = `Bearer ${token}`;
-
-    // Perform the fetch request
-    return fetch(url, options);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('expressionInput');
 
@@ -20,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const expression = form.elements.expression.value; // Get the expression from the input
 
         // Send the expression to the backend
-        fetchWithToken('http://localhost:8080/expression/', {
+        fetch('http://localhost:8080/expression/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,9 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
-            }
-            if (response.headers.get('Content-Type') !== 'application/json') {
-                throw new Error('Response is not JSON');
             }
             return response.json();
         })
@@ -50,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    fetchWithToken('http://localhost:8080/expression/', {
+    fetch('http://localhost:8080/expression/', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -79,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
             deleteButton.addEventListener('click', function() {
                 // Implement the deletion logic here
                 // For example, send a DELETE request to the backend
-                fetchWithToken(`http://localhost:8080/expression/${expression.id}`, {
+                fetch(`http://localhost:8080/expression/${expression.id}`, {
                     method: 'DELETE',
                 })
                 .then(response => {

@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 )
+
+var tokenExpire = time.Now().Add(3 * time.Minute)
 
 type Request struct {
 	Username string `json:"username"`
@@ -30,7 +33,7 @@ func RegisterUserHandler(ctx context.Context, userInteractor UserInteractor) htt
 		}
 
 		if err := userInteractor.RegisterUser(ctx, req.Username, req.Password); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "This username is already registered", http.StatusBadRequest)
 			log.Printf("error: %v", err)
 			return
 		}
@@ -59,11 +62,16 @@ func LoginUserHandler(ctx context.Context, userInteractor UserInteractor) http.H
 			return
 		}
 
-		response := map[string]string{
-			"token": token,
-		}
+		http.SetCookie(w, &http.Cookie{
+			Name:     "auth_token",
+			Value:    token,
+			Path:     "/",
+			Expires:  tokenExpire,
+			SameSite: http.SameSiteNoneMode,
+			Secure:   true,
+		})
 
-		json.NewEncoder(w).Encode(response)
+		http.Redirect(w, r, "http://localhost:8080/", http.StatusSeeOther)
 		log.Print("success LoginUserHandler")
 	}
 }

@@ -41,14 +41,14 @@ func (s *Server) Calculate(ctx context.Context, in *pb.ExpressionRequest) (*pb.E
 }
 
 func RunAgentServer() {
-	addr := fmt.Sprintf("%s:%s", "localhost", "5000")
+	addr := "localhost:5000"
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Println("error starting tcp listener: ", err)
 		os.Exit(1)
 	}
 
-	log.Println("tcp listener started")
+	log.Printf("tcp listener started at %s", addr)
 
 	grpcServer := grpc.NewServer()
 

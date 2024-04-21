@@ -39,11 +39,11 @@ func (s *Storage) RegisterUser(ctx context.Context, uname, pswrd string) error {
 func (s *Storage) LoginUser(ctx context.Context, uname, pswrd string) (string, error) {
 
 	q := `
-	SELECT name, password FROM users WHERE name=$1
+	SELECT id, password FROM users WHERE name=$1
 	`
 	var user User
 
-	err := s.db.QueryRowContext(ctx, q, uname).Scan(&user.Name, &user.Password)
+	err := s.db.QueryRowContext(ctx, q, uname).Scan(&user.ID, &user.Password)
 	if err != nil {
 		return "", err
 	}
@@ -53,7 +53,7 @@ func (s *Storage) LoginUser(ctx context.Context, uname, pswrd string) (string, e
 		return "", err
 	}
 
-	token, err := jwts.GenerateJWTToken(user.Name)
+	token, err := jwts.GenerateJWTToken(user.ID)
 	if err != nil {
 		return "", err
 	}

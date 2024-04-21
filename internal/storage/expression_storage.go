@@ -36,7 +36,7 @@ func (s *Storage) InsertExpression(ctx context.Context, expr *Expression) (int64
 }
 
 // SelectExpressions - returns all expressions slice from database table
-func (s *Storage) SelectExpressions(ctx context.Context) ([]Expression, error) {
+func (s *Storage) SelectAllExpressions(ctx context.Context) ([]Expression, error) {
 
 	var (
 		expressions []Expression
@@ -63,17 +63,30 @@ func (s *Storage) SelectExpressions(ctx context.Context) ([]Expression, error) {
 }
 
 // SelectExpressionByID - guess yourself :)
-func (s *Storage) SelectExpressionByID(ctx context.Context, userID int64, id int64) (Expression, error) {
+func (s *Storage) SelectExpressionsByID(ctx context.Context, userID int64) ([]Expression, error) {
 
-	e := Expression{}
-	var q = `SELECT id, expression, answer, date, status FROM expressions WHERE userid = $1, id = $2`
+	var ( 
+		q = `SELECT id, expression, answer, date, status FROM expressions WHERE userid = $1`
+		expressions []Expression
+	)
 
-	err := s.db.QueryRowContext(ctx, q, userID, id).Scan(&e.ID, &e.Expression, &e.Answer, &e.Date, &e.Status)
+	rows, err := s.db.QueryContext(ctx, q, userID)
 	if err != nil {
-		return e, err
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		e := Expression{}
+		err := rows.Scan(&e.ID, &e.Expression, &e.Answer, &e.Date, &e.Status)
+		if err != nil {
+			return nil, err
+		}
+
+		expressions = append(expressions, e)
 	}
 
-	return e, nil
+	return expressions, nil
 }
 
 // UpdateExpression - updates data about expression, specifically its answer and/or status
