@@ -25,14 +25,14 @@ type ResponseData struct {
 	Status 	   string `json:"status"`
 }
 
-type ExpressionSaver interface { // Methods for interactions with database
+type ExpressionInteractor interface { // Methods for interactions with database
 	InsertExpression(ctx context.Context, expr *storage.Expression) (int64, error)
 	SelectExpressions(ctx context.Context) ([]storage.Expression, error)
 	DeleteExpression(ctx context.Context, id int64) error
 }
 
 // CreateExpressionHandler - post method handler which stores an expression
-func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSaver) http.HandlerFunc {
+func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		date := time.Now()
@@ -67,7 +67,7 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionSave
 }
 
 // GetExpressionHandler - get method handler which writes all expressions from database
-func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionSaver) http.HandlerFunc {
+func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		allExpressions, err := expressionSaver.SelectExpressions(ctx)
@@ -105,7 +105,7 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionSaver)
 }
 
 // DeleteExpressionHandler
-func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionSaver) http.HandlerFunc {
+func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 	
 	return func(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(r.PathValue("id"))

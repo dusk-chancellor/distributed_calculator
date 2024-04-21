@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authorization</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <h2>Authorization</h2>
-        <form>
-            <label for="uname"></label>
-                <input type="text" placeholder="Username" name="uname" required>
+        <form id="authForm">
+            <label for="username"></label>
+                <input type="text" id="username" placeholder="Username" name="username" required>
                 <br>
-            <label for="psw"></label>
-                <input type="password" placeholder="Password" name="psw" required>
+            <label for="password"></label>
+                <input type="password" id="password" placeholder="Password" name="password" required>
                 <div class="toggle-password">
                     <i class="fa-duotone fa-eye"></i>
                         <i class="fa-duotone fa-eye-slash"></i>
                 </div>
                 <br>
-                <button type="submit">Login</button>
-            <button type="submit">Sign up</button>
+                <button type="submit" id="loginButton">Login</button>
+                <button type="submit" id="signupButton">Sign up</button>
         </form>
     </div>
     <script src="script.js"></script>

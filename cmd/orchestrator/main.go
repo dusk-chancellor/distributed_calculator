@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	exprHandler "github.com/dusk-chancellor/distributed_calculator/internal/http/handlers/expression"
+	authHandler "github.com/dusk-chancellor/distributed_calculator/internal/http/handlers/auth"
+	"github.com/dusk-chancellor/distributed_calculator/internal/http/middlewares"
 	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/manager"
 )
@@ -26,9 +28,13 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.Handle("/", http.FileServer(http.Dir("frontend/main")))
-	mux.Handle("POST /expression/", exprHandler.CreateExpressionHandler(ctx, db))
-	mux.Handle("GET /expression/", exprHandler.GetExpressionsHandler(ctx, db))
-	mux.Handle("DELETE /expression/{id}/", exprHandler.DeleteExpressionHandler(ctx, db))
+	mux.Handle("/auth/", http.StripPrefix("/auth", http.FileServer(http.Dir("frontend/auth"))))
+
+	mux.Handle("/signup/", authHandler.RegisterUserHandler(ctx, db))
+	mux.Handle("/login/", authHandler.LoginUserHandler(ctx, db))
+	mux.Handle("POST /expression/", middlewares.JWTMiddleware(exprHandler.CreateExpressionHandler(ctx, db)))
+	mux.Handle("GET /expression/", middlewares.JWTMiddleware(exprHandler.GetExpressionsHandler(ctx, db)))
+	mux.Handle("DELETE /expression/{id}/", middlewares.JWTMiddleware(exprHandler.DeleteExpressionHandler(ctx, db)))
 
 	server := &http.Server{
 		Addr:    addr,
