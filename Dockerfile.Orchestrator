@@ -1,0 +1,11 @@
+FROM golang:1.22
+
+WORKDIR /distributed_calculator
+
+COPY . .
+
+RUN go mod tidy
+
+EXPOSE 8080
+
+CMD ["go", "run", "cmd/orchestrator/main.go"]

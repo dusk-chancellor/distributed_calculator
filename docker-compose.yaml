@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.Orchestrator
+    container_name: orchestrator
+    ports:
+      - '8080:8080'
+    networks:
+      - calc_net
+
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile.Agent
+    container_name: agent
+    ports:
+      - '5000:5000'
+    networks:
+      - calc_net
+
+networks:
+  calc_net: 
+    driver: bridge
+    

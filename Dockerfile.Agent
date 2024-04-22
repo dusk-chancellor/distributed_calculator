@@ -1,0 +1,11 @@
+FROM golang:1.22.1
+
+WORKDIR /distributed_calculator
+
+COPY . .
+
+RUN go mod tidy
+
+EXPOSE 5000/tcp
+
+CMD ["go", "run", "cmd/agent/main.go"]
