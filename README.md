@@ -1,6 +1,6 @@
 # Распределенный калькулятор
 
-> Этот проект представляет собой выполнение финальной задачи в
+Этот проект представляет собой выполнение финальной задачи в
 Яндекс.Лицее ("распределенная система для выполнения вычислений").
 Система состоит из 2х основных компонентов: *оркестратор* - "менеджер", 
 управляющий и координирующий вычислениями; *агент* - "вычислитель", отвечающий 
@@ -16,28 +16,28 @@
 ## Установка
 ### Старый добрый метод:
 1. Откройте нужную директорию в терминале и клонируйте туда репозиторий:
-<br>
+
 `git clone https://github.com/dusk-chancellor/distributed_calculator.git`
 
 Вы также можете скачать zip файл проекта и извлечь его в нужную директорию.
 
 2. Перейдите в директорию проекта:
-<br>
+
 `cd distributed_calculator`
 
 3. Установите обязательные зависимости:
-<br>
+
 `go mod tidy`
 
 4. Запустите оркестратор с рабочей директории:
-<br>
+
 `go run ./cmd/orchestrator/main.go`
 
 В терминале должно отобразиться 'running Orchestrator server at
 localhost:8080' и 'running Orchestrator manager'
 
 5. Запустите агента с рабочей директории:
-<br>
+
 `go run ./cmd/agent/main.go`
 
 В терминале вы должны увидеть 'tcp listener started at localhost:5000'
@@ -50,7 +50,7 @@ localhost:8080' и 'running Orchestrator manager'
 или же запустите docker daemon
 
 2. Поднимите контейнеры:
-<br>
+
 `docker-compose up`
 
 3. Ждите, много.
@@ -161,15 +161,15 @@ P.S ~~Автор не рекоммендует данный метод, т.к в
 
 ### REST API запросы
 
-<u>[POST /auth/signup/] -> [RegisterUserHandler] -> [RegisterUser]
+| POST /auth/signup/       | -> | RegisterUserHandler     | -> | RegisterUser          |
 
-[POST /auth/login/] -> [LoginUserHandler] -> [LoginUser]
+| POST /auth/login/        | -> | LoginUserHandler        | -> | LoginUser             |
 
-[POST /expression/] -> [CreateExpressionHandler] -> [InsertExpression]
+| POST /expression/        | -> | CreateExpressionHandler | -> | InsertExpression      |
 
-[GET /expression/] -> [GetExpressionsHandler] -> [SelectExpressionsByID]
+| GET /expression/         | -> | GetExpressionsHandler   | -> | SelectExpressionsByID |
 
-[DELETE /expression/{id}/] -> [DeleteExpressionHandler] -> [DeleteExpression]</u>
+| DELETE /expression/{id}/ | -> | DeleteExpressionHandler | -> | DeleteExpression      |
 
 ## Технологии
 
@@ -196,9 +196,6 @@ P.S ~~Автор не рекоммендует данный метод, т.к в
 <a href="https://www.sqlite.org/index.html" target="_blank">
  <img src="https://www.sqlite.org/images/sqlite370_banner.gif" alt="SQLite" width="65">
 </a>
-
-</div>
-<div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">
  <img src="https://cdn.dribbble.com/users/66221/screenshots/1655593/media/63d9b0acd7e81cde54f291bdcf8a24df.png?resize=400x300&vertical=center" alt="HTML" width="65">
