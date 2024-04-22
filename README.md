@@ -178,43 +178,43 @@ P.S ~~Автор не рекоммендует данный метод, т.к в
 <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
 
 <a href="https://golang.org/" target="_blank">
- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Go_Logo_Blue.svg/1200px-Go_Logo_Blue.svg.png" alt="Go" width="65">
+ <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Go_Logo_Blue.svg/1200px-Go_Logo_Blue.svg.png" alt="Go" width="75" height="65">
 </a>
 
 <a href="https://grpc.io/" target="_blank">
- <img src="https://grpc.io/img/grpc_square_reverse_4x.png" alt="gRPC" width="65">
+ <img src="https://grpc.io/img/grpc_square_reverse_4x.png" alt="gRPC" width="75" height="65">
 </a>
 
 <a href="https://jwt.io/" target="_blank">
- <img src="https://jwt.io/img/logo.svg" alt="JWT" width="65">
+ <img src="https://jwt.io/img/logo.svg" alt="JWT" width="75" height="65">
 </a>
 
 <a href="https://developers.google.com/protocol-buffers" target="_blank">
- <img src="https://www.codespot.org/assets/cover/protocol-buffers.png" alt="Protocol Buffers" width="65">
+ <img src="https://www.codespot.org/assets/cover/protocol-buffers.png" alt="Protocol Buffers" width="75" height="65">
 </a>
 
 <a href="https://www.sqlite.org/index.html" target="_blank">
- <img src="https://www.sqlite.org/images/sqlite370_banner.gif" alt="SQLite" width="65">
+ <img src="https://www.sqlite.org/images/sqlite370_banner.gif" alt="SQLite" width="75" height="65">
 </a>
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">
- <img src="https://cdn.dribbble.com/users/66221/screenshots/1655593/media/63d9b0acd7e81cde54f291bdcf8a24df.png?resize=400x300&vertical=center" alt="HTML" width="65">
+ <img src="https://cdn.dribbble.com/users/66221/screenshots/1655593/media/63d9b0acd7e81cde54f291bdcf8a24df.png?resize=400x300&vertical=center" alt="HTML" width="75" height="65">
 </a>
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">
- <img src="https://i.pinimg.com/736x/a9/dc/c7/a9dcc740cad3149598307b5de8bc10c3.jpg" alt="CSS" width="65">
+ <img src="https://i.pinimg.com/736x/a9/dc/c7/a9dcc740cad3149598307b5de8bc10c3.jpg" alt="CSS" width="75" height="65">
 </a>
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
- <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="JavaScript" width="65">
+ <img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png" alt="JavaScript" width="75" height="65">
 </a>
 
 <a href="https://www.docker.com/" target="_blank">
- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTQtnXQkjxe8xcXLmq8OvpW5ugiLGN_Y8Jepra6Wt1AA&s" alt="Docker" width="65">
+ <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTQtnXQkjxe8xcXLmq8OvpW5ugiLGN_Y8Jepra6Wt1AA&s" alt="Docker" width="75" height="65">
 </a>
 
 <a href="https://docs.docker.com/compose/" target="_blank">
- <img src="https://i0.wp.com/codeblog.dotsandbrackets.com/wp-content/uploads/2016/10/compose-logo.jpg?ssl=1" alt="Docker Compose" width="65">
+ <img src="https://i0.wp.com/codeblog.dotsandbrackets.com/wp-content/uploads/2016/10/compose-logo.jpg?ssl=1" alt="Docker Compose" width="75" height="65">
 </a>
 
 </div>
