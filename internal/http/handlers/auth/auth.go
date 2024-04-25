@@ -5,10 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
 )
-
-var tokenExpire = time.Now().Add(3 * time.Minute)
 
 type Request struct {
 	Username string `json:"username"`
@@ -66,7 +63,6 @@ func LoginUserHandler(ctx context.Context, userInteractor UserInteractor) http.H
 			Name:     "auth_token",
 			Value:    token,
 			Path:     "/",
-			Expires:  tokenExpire,
 			SameSite: http.SameSiteNoneMode,
 			Secure:   true,
 		})

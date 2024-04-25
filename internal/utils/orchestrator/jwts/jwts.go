@@ -8,7 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = os.Getenv("JWT_SECRET_KEY")
+var (
+	secretKey = os.Getenv("JWT_SECRET_KEY")
+	tokenExpire = 3 * time.Minute // you may change this if you want
+)
 
 // GenerateJWTToken generates a new jwt token for user
 func GenerateJWTToken(userID int64) (string, error) {
@@ -19,7 +22,7 @@ func GenerateJWTToken(userID int64) (string, error) {
 		"userid": userIDStr,
 		"iat": now.Unix(),
 		"nbf": now.Unix(),
-		"exp": now.Add(3 * time.Minute).Unix(),
+		"exp": now.Add(tokenExpire).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(secretKey))

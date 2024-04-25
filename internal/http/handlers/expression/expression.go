@@ -39,18 +39,6 @@ const UserIDKey contextKey = "userid"
 func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		date := time.Now()
-
-		jsonDec := json.NewDecoder(r.Body)
-
-		var req Request
-		if err := jsonDec.Decode(&req); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
 		cookie, err := r.Cookie("auth_token")
 		if err != nil {
 			http.Redirect(w, r, "/auth", http.StatusSeeOther)
@@ -66,6 +54,19 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 			log.Printf("error: %v", err)
 			return
 		}
+		
+		w.Header().Set("Content-Type", "application/json")
+
+		date := time.Now()
+
+		jsonDec := json.NewDecoder(r.Body)
+
+		var req Request
+		if err := jsonDec.Decode(&req); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
 		userID, err := strconv.ParseInt(tokenValue, 10, 64)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -150,6 +151,22 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionIntera
 func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 	
 	return func(w http.ResponseWriter, r *http.Request) {
+		cookie, err := r.Cookie("auth_token")
+		if err != nil {
+			http.Redirect(w, r, "/auth", http.StatusSeeOther)
+			log.Printf("no cookie found")
+			return
+		}
+
+		tokenString := cookie.Value
+
+		_, err = jwts.VerifyJWTToken(tokenString)
+		if err != nil {
+			http.Redirect(w, r, "/auth", http.StatusSeeOther)
+			log.Printf("error: %v", err)
+			return
+		}
+
 		id, err := strconv.Atoi(r.PathValue("id"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)

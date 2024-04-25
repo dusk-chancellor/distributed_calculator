@@ -41,7 +41,7 @@ func (s *Server) Calculate(ctx context.Context, in *pb.ExpressionRequest) (*pb.E
 }
 
 func RunAgentServer() {
-	addr := "localhost:5000"
+	addr := "0.0.0.0:5000"
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Println("error starting tcp listener: ", err)
