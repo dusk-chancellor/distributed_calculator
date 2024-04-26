@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
-	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/jwts"
 )
 
 // Handlers for operations with expressions
@@ -26,35 +25,22 @@ type ResponseData struct {
 	Status 	   string `json:"status"`
 }
 
+// must be somewhere else than here
+const (
+	null   = "null"
+	stored = "stored"
+)
+
 type ExpressionInteractor interface { // Methods for interactions with database
 	InsertExpression(ctx context.Context, expr *storage.Expression) (int64, error)
 	SelectExpressionsByID(ctx context.Context, userID int64) ([]storage.Expression, error)
 	DeleteExpression(ctx context.Context, id int64) error
 }
 
-type contextKey string
-const UserIDKey contextKey = "userid"
-
 // CreateExpressionHandler - post method handler which stores an expression
 func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("auth_token")
-		if err != nil {
-			http.Redirect(w, r, "/auth", http.StatusSeeOther)
-			log.Printf("no cookie found")
-			return
-		}
-
-		tokenString := cookie.Value
-
-		tokenValue, err := jwts.VerifyJWTToken(tokenString)
-		if err != nil {
-			http.Redirect(w, r, "/auth", http.StatusSeeOther)
-			log.Printf("error: %v", err)
-			return
-		}
-		
 		w.Header().Set("Content-Type", "application/json")
 
 		date := time.Now()
@@ -67,19 +53,19 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 			return
 		}
 
-		userID, err := strconv.ParseInt(tokenValue, 10, 64)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("error: %v", err)
+		userID, ok := r.Context().Value("userid").(int64)
+		if !ok {
+			http.Error(w, "userID not received", http.StatusBadRequest)
+			log.Printf("userID not received: %d", userID)
 			return
 		}
 
 		var expressionStruct = storage.Expression{
 			UserID: userID,
 			Expression: req.Expression,
-			Answer: "null",
+			Answer: null,
 			Date: date.Format("2006/01/02 15:04:05"),
-			Status: "stored",
+			Status: stored,
 		}
 
 		id, err := expressionSaver.InsertExpression(ctx, &expressionStruct)
@@ -99,25 +85,10 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionIntera
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		cookie, err := r.Cookie("auth_token")
-		if err != nil {
-			http.Redirect(w, r, "/auth", http.StatusSeeOther)
-			log.Printf("no cookie found")
-			return
-		}
-
-		tokenString := cookie.Value
-
-		tokenValue, err := jwts.VerifyJWTToken(tokenString)
-		if err != nil {
-			http.Redirect(w, r, "/auth", http.StatusSeeOther)
-			log.Printf("error: %v", err)
-			return
-		}
-		userID, err := strconv.ParseInt(tokenValue, 10, 64)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			log.Printf("error: %v", err)
+		userID, ok := r.Context().Value("userid").(int64)
+		if !ok {
+			http.Error(w, "userID not received", http.StatusBadRequest)
+			log.Printf("userID not received: %d", userID)
 			return
 		}
 
@@ -151,21 +122,7 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionIntera
 func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
 	
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("auth_token")
-		if err != nil {
-			http.Redirect(w, r, "/auth", http.StatusSeeOther)
-			log.Printf("no cookie found")
-			return
-		}
-
-		tokenString := cookie.Value
-
-		_, err = jwts.VerifyJWTToken(tokenString)
-		if err != nil {
-			http.Redirect(w, r, "/auth", http.StatusSeeOther)
-			log.Printf("error: %v", err)
-			return
-		}
+		w.Header().Set("Content-Type", "application/json")
 
 		id, err := strconv.Atoi(r.PathValue("id"))
 		if err != nil {

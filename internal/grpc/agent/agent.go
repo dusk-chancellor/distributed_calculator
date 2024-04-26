@@ -56,8 +56,5 @@ func RunAgentServer() {
 
 	pb.RegisterCalculatorServiceServer(grpcServer, expressionServiceServer)
 
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Println("error serving grpc: ", err)
-		os.Exit(1)
-	}
+	go log.Fatal(grpcServer.Serve(lis))
 }

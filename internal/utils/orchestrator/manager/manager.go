@@ -15,11 +15,11 @@ type ExpressionUpdater interface {
 	SelectAllExpressions(ctx context.Context) ([]storage.Expression, error)
 }
 
-// all this states must be somewhere else than here
-var (
-	done = "done"
+// all this status must be somewhere else than here
+const (
 	trouble = "error"
-	null = "null"
+	done    = "done"
+	null    = "null"
 )
 
 func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater) {
