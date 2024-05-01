@@ -6,12 +6,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Orchestrator
-    environment:
-      - JWT_SECRET_KEY=skibiditoiletgyattrizzsigmafanumtax
-      - AGENT_HOST=0.0.0.0
-      - AGENT_PORT=5000
-      - ORCHESTRATOR_HOST=0.0.0.0
-      - ORCHESTRATOR_PORT=8080
     ports:
       - '8080:8080'
     networks:
@@ -22,15 +16,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Agent
-    environment:
-      - AGENT_HOST=0.0.0.0
-      - AGENT_PORT=5000
     ports:
       - '5000:5000'
     networks:
       - calc_net
+    depends_on:
+     - orchestrator
 
 networks:
   calc_net: 
-    driver: bridge
     

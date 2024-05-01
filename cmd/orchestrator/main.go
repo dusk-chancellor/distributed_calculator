@@ -72,6 +72,7 @@ func main() {
 		agentPort = "5000"
 	}
 	agentAddr := fmt.Sprintf("%s:%s", agentHost, agentPort)
+	
 	go manager.RunManager(ctx, db, agentAddr)
 
 	log.Printf("running Orchestrator server at %s", addr)

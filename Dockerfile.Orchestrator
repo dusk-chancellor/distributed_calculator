@@ -1,20 +1,31 @@
-FROM golang:1.22
+FROM golang:1.22.0 AS build
 
-WORKDIR /usr/bin/distributed_calculator
+#RUN apt update && apt upgrade && \
+#    apt add --no-cache bash git gcc openssh
 
-COPY cmd/orchestrator /usr/bin/distributed_calculator/cmd/orchestrator
-COPY database /usr/bin/distributed_calculator/database
-COPY frontend /usr/bin/distributed_calculator/frontend
-COPY internal/grpc/orchestrator /usr/bin/distributed_calculator/internal/grpc/orchestrator
-COPY internal/http /usr/bin/distributed_calculator/internal/http
-COPY internal/storage /usr/bin/distributed_calculator/internal/storage
-COPY internal/utils/orchestrator /usr/bin/distributed_calculator/internal/utils/orchestrator
-COPY go.mod /usr/bin/distributed_calculator/go.mod
-COPY go.sum /usr/bin/distributed_calculator/go.sum
-COPY proto /usr/bin/distributed_calculator/proto
+WORKDIR /distributed_calculator
+
+COPY go.mod go.sum ./
+
+COPY ./cmd/orchestrator ./cmd/orchestrator/
+COPY ./database ./database/
+COPY ./frontend ./frontend/
+COPY ./internal/grpc/orchestrator ./internal/grpc/orchestrator/
+COPY ./internal/http ./internal/http/
+COPY ./internal/storage ./internal/storage/
+COPY ./internal/utils/orchestrator ./internal/utils/orchestrator/
+COPY ./proto ./proto/
+
+ENV JWT_SECRET_KEY=skibiditoiletgyattrizzsigmafanumtax
+ENV ORCHESTRATOR_HOST=0.0.0.0
+ENV ORCHESTRATOR_PORT=8080
+ENV AGENT_HOST=agent
+ENV AGENT_PORT=5000
 
 RUN go mod tidy
+RUN go build -o orchestrator cmd/orchestrator/*.go
 
 EXPOSE 8080
 
-CMD ["go", "run", "./cmd/orchestrator/main.go"]
+CMD [ "./orchestrator" ]
+#CMD [ "go", "run", "./cmd/orchestrator/main.go" ] #if you want to run it with go run

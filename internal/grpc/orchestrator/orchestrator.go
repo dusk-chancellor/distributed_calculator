@@ -11,12 +11,16 @@ import (
 )
 
 func Calculate(ctx context.Context, expr string, addr string) (float64, error) {
-	
+
 	conn, err := grpc.Dial(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Println("could not connect to grpc server:", err)
 		return 0, status.Errorf(status.Code(err), "could not connect to grpc server: %v", err)
 	}
+	defer conn.Close()
+
+	stat := conn.GetState().String()
+	log.Println("connection state:", stat)
 
 	grpcClient := pb.NewCalculatorServiceClient(conn)
 
@@ -26,6 +30,6 @@ func Calculate(ctx context.Context, expr string, addr string) (float64, error) {
 		return 0, status.Errorf(status.Code(err), "could not calculate: %v", err)
 	}
 
-	log.Printf("Calculate() answer -> %v", ans1.Result)
+	log.Printf("Agent response -> %v", ans1.Result)
 	return ans1.Result, nil
 }
