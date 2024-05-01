@@ -1,11 +1,20 @@
 FROM golang:1.22
 
-WORKDIR /distributed_calculator
+WORKDIR /usr/bin/distributed_calculator
 
-COPY . .
+COPY cmd/orchestrator /usr/bin/distributed_calculator/cmd/orchestrator
+COPY database /usr/bin/distributed_calculator/database
+COPY frontend /usr/bin/distributed_calculator/frontend
+COPY internal/grpc/orchestrator /usr/bin/distributed_calculator/internal/grpc/orchestrator
+COPY internal/http /usr/bin/distributed_calculator/internal/http
+COPY internal/storage /usr/bin/distributed_calculator/internal/storage
+COPY internal/utils/orchestrator /usr/bin/distributed_calculator/internal/utils/orchestrator
+COPY go.mod /usr/bin/distributed_calculator/go.mod
+COPY go.sum /usr/bin/distributed_calculator/go.sum
+COPY proto /usr/bin/distributed_calculator/proto
 
 RUN go mod tidy
 
 EXPOSE 8080
 
-CMD ["go", "run", "cmd/orchestrator/main.go"]
+CMD ["go", "run", "./cmd/orchestrator/main.go"]

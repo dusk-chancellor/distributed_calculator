@@ -12,6 +12,8 @@ import (
 	"github.com/dusk-chancellor/distributed_calculator/internal/utils/agent/validator"
 	pb "github.com/dusk-chancellor/distributed_calculator/proto"
 	"google.golang.org/grpc"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
@@ -41,7 +43,20 @@ func (s *Server) Calculate(ctx context.Context, in *pb.ExpressionRequest) (*pb.E
 }
 
 func RunAgentServer() {
-	addr := "0.0.0.0:5000"
+
+	host, ok := os.LookupEnv("AGENT_HOST")
+	if !ok {
+		log.Print("AGENT_HOST not set, using 0.0.0.0")
+		host = "0.0.0.0"
+	}
+
+	port, ok := os.LookupEnv("AGENT_PORT")
+	if !ok {
+		log.Print("AGENT_PORT not set, using 5000")
+		port = "5000"
+	}
+	addr := fmt.Sprintf("%s:%s", host, port)
+	
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Println("error starting tcp listener: ", err)

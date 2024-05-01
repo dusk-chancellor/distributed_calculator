@@ -22,7 +22,7 @@ const (
 	null    = "null"
 )
 
-func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater) {
+func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater, agentAddr string) {
 	
 	log.Println("running Orchestrator manager")
 	for {
@@ -36,9 +36,9 @@ func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater) {
 				if expression.Status == done || expression.Status == trouble {
 					continue
 				} else {
-					ans, err := orchestrator.Calculate(ctx, expression.Expression)
+					ans, err := orchestrator.Calculate(ctx, expression.Expression, agentAddr)
 					if err != nil {
-						log.Printf("could not Calculate(): %v", err)
+						log.Printf("[manager] could not Calculate(): %v", err)
 						expressionUpdater.UpdateExpression(
 							ctx, null, trouble, expression.ID,
 						)

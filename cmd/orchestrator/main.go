@@ -2,14 +2,18 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	authHandler "github.com/dusk-chancellor/distributed_calculator/internal/http/handlers/auth"
 	exprHandler "github.com/dusk-chancellor/distributed_calculator/internal/http/handlers/expression"
-	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 	"github.com/dusk-chancellor/distributed_calculator/internal/http/middlewares"
+	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
 	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/manager"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 // Orchestrator - the main app server, which directly operates with database
@@ -22,8 +26,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	addr := "0.0.0.0:8080"
 
 	mux := http.NewServeMux()
 
@@ -40,12 +42,37 @@ func main() {
 	mux.Handle("GET /expression/", middlewares.AuthorizeJWTToken(exprHandler.GetExpressionsHandler(ctx, db)))
 	mux.Handle("DELETE /expression/{id}/", middlewares.AuthorizeJWTToken(exprHandler.DeleteExpressionHandler(ctx, db)))
 
+	host, ok := os.LookupEnv("ORCHESTRATOR_HOST")
+	if !ok {
+		log.Print("ORCHESTRATOR_HOST not set, using 0.0.0.0")
+		host = "0.0.0.0"
+	}
+
+	port, ok := os.LookupEnv("ORCHESTRATOR_PORT")
+	if !ok {
+		log.Print("ORCHESTRATOR_PORT not set, using 8080")
+		port = "8080"
+	}
+	addr := fmt.Sprintf("%s:%s", host, port)
+	
 	server := &http.Server{
 		Addr:    addr,
 		Handler: mux,
 	}
 
-	go manager.RunManager(ctx, db)
+	agentHost, ok := os.LookupEnv("AGENT_HOST")
+	if !ok {
+		log.Print("AGENT_HOST not set, using 0.0.0.0")
+		agentHost = "0.0.0.0"
+	}
+
+	agentPort, ok := os.LookupEnv("AGENT_PORT")
+	if !ok {
+		log.Print("AGENT_PORT not set, using 5000")
+		agentPort = "5000"
+	}
+	agentAddr := fmt.Sprintf("%s:%s", agentHost, agentPort)
+	go manager.RunManager(ctx, db, agentAddr)
 
 	log.Printf("running Orchestrator server at %s", addr)
 	go log.Fatal(server.ListenAndServe())

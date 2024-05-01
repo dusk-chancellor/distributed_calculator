@@ -1,11 +1,16 @@
-FROM golang:1.22.1
+FROM golang:1.22
 
-WORKDIR /distributed_calculator
+WORKDIR /usr/bin/distributed_calculator
 
-COPY . .
+COPY cmd/agent /usr/bin/distributed_calculator/cmd/agent
+COPY internal/grpc/agent /usr/bin/distributed_calculator/internal/grpc/agent
+COPY internal/utils/agent /usr/bin/distributed_calculator/internal/utils/agent
+COPY go.mod /usr/bin/distributed_calculator/go.mod
+COPY go.sum /usr/bin/distributed_calculator/go.sum
+COPY proto /usr/bin/distributed_calculator/proto
 
 RUN go mod tidy
 
-EXPOSE 5000/tcp
+EXPOSE 5000
 
-CMD ["go", "run", "cmd/agent/main.go"]
+CMD ["go", "run", "./cmd/agent/main.go"]
