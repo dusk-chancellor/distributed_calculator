@@ -30,10 +30,12 @@ type CalculatorServiceServer interface {
 }
 
 func (s *Server) Calculate(ctx context.Context, in *pb.ExpressionRequest) (*pb.ExpressionResponse, error) {
-	if !validator.IsValidExpression(in.Expression) {
+	
+	expr := in.GetExpression()
+	if !validator.IsValidExpression(expr) {
 		return nil, fmt.Errorf("invalid expression: %s", in.Expression)
 	}
-	postfixed := itp.ToPostfix(in.Expression)
+	postfixed := itp.ToPostfix(expr)
 	res, err := calculation.Evaluate(postfixed)
 	if err != nil {
 		return nil, err

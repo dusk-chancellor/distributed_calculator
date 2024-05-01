@@ -38,7 +38,6 @@ func RunManager(ctx context.Context, expressionUpdater ExpressionUpdater, agentA
 				} else {
 					ans, err := orchestrator.Calculate(ctx, expression.Expression, agentAddr)
 					if err != nil {
-						log.Printf("[manager] could not Calculate(): %v", err)
 						expressionUpdater.UpdateExpression(
 							ctx, null, trouble, expression.ID,
 						)
