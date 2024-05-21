@@ -3,12 +3,17 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
+	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/manager"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 // Handlers for operations with expressions
@@ -26,19 +31,13 @@ type ResponseData struct {
 }
 
 // must be somewhere else than here
-const (
+var (
 	null   = "null"
 	stored = "stored"
 )
 
-type ExpressionInteractor interface { // Methods for interactions with database
-	InsertExpression(ctx context.Context, expr *storage.Expression) (int64, error)
-	SelectExpressionsByID(ctx context.Context, userID int64) ([]storage.Expression, error)
-	DeleteExpression(ctx context.Context, id int64) error
-}
-
 // CreateExpressionHandler - post method handler which stores an expression
-func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
+func CreateExpressionHandler(ctx context.Context, expressionSaver storage.ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -74,13 +73,15 @@ func CreateExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 			return
 		}
 
+		go manager.Manage(ctx, expressionSaver, agentAddress())
+
 		w.WriteHeader(http.StatusCreated)
 		log.Printf("Successful CreateExpressionHandler operation; id = %d", id)
 	}
 }
 
 // GetExpressionHandler - get method handler which writes all expressions from database
-func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
+func GetExpressionsHandler(ctx context.Context, expressionSaver storage.ExpressionInteractor) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -91,6 +92,8 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionIntera
 			log.Printf("userID not received: %d", userID)
 			return
 		}
+
+		go manager.Manage(ctx, expressionSaver, agentAddress())
 
 		allExpressions, err := expressionSaver.SelectExpressionsByID(ctx, userID)
 		if err != nil {
@@ -119,18 +122,26 @@ func GetExpressionsHandler(ctx context.Context, expressionSaver ExpressionIntera
 }
 
 // DeleteExpressionHandler
-func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionInteractor) http.HandlerFunc {
+func DeleteExpressionHandler(ctx context.Context, expressionSaver storage.ExpressionInteractor) http.HandlerFunc {
 	
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
-		id, err := strconv.Atoi(r.PathValue("id"))
+		go manager.Manage(ctx, expressionSaver, agentAddress())
+
+		pathValues := strings.Split(r.URL.Path, "/")
+		if len(pathValues) < 3 || pathValues[2] == "" {
+			http.Error(w, "Invalid URL format", http.StatusBadRequest)
+			return
+		}
+
+		expressionID, err := strconv.ParseInt(pathValues[2], 10, 64)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		err = expressionSaver.DeleteExpression(ctx, int64(id))
+		err = expressionSaver.DeleteExpression(ctx, int64(expressionID))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -139,4 +150,19 @@ func DeleteExpressionHandler(ctx context.Context, expressionSaver ExpressionInte
 		w.WriteHeader(http.StatusAccepted)
 		log.Print("Successful DeleteExpressionHandler operation")
 	}
+}
+
+func agentAddress() string {
+	agentHost, ok := os.LookupEnv("AGENT_HOST")
+	if !ok {
+		log.Print("AGENT_HOST not set, using 0.0.0.0")
+		agentHost = "0.0.0.0"
+	}
+
+	agentPort, ok := os.LookupEnv("AGENT_PORT")
+	if !ok {
+		log.Print("AGENT_PORT not set, using 5000")
+		agentPort = "5000"
+	}
+	return fmt.Sprintf("%s:%s", agentHost, agentPort)
 }

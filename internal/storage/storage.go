@@ -14,6 +14,15 @@ type Storage struct {
 	db *sql.DB
 }
 
+// Methods for interactions with database
+type ExpressionInteractor interface { 
+	InsertExpression(ctx context.Context, expr *Expression) (int64, error)
+	SelectExpressionsByID(ctx context.Context, userID int64) ([]Expression, error)
+	DeleteExpression(ctx context.Context, id int64) error
+	UpdateExpression(ctx context.Context, answer, status string, id int64,) error
+	SelectAllExpressions(ctx context.Context) ([]Expression, error)
+}
+
 // New - creates new database in the given storagePath with tables
 func New(storagePath string) (*Storage, error) {
 	const op = "storage/storage-New"

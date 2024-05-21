@@ -11,7 +11,6 @@ import (
 	exprHandler "github.com/dusk-chancellor/distributed_calculator/internal/http/handlers/expression"
 	"github.com/dusk-chancellor/distributed_calculator/internal/http/middlewares"
 	"github.com/dusk-chancellor/distributed_calculator/internal/storage"
-	"github.com/dusk-chancellor/distributed_calculator/internal/utils/orchestrator/manager"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -59,21 +58,6 @@ func main() {
 		Addr:    addr,
 		Handler: mux,
 	}
-
-	agentHost, ok := os.LookupEnv("AGENT_HOST")
-	if !ok {
-		log.Print("AGENT_HOST not set, using 0.0.0.0")
-		agentHost = "0.0.0.0"
-	}
-
-	agentPort, ok := os.LookupEnv("AGENT_PORT")
-	if !ok {
-		log.Print("AGENT_PORT not set, using 5000")
-		agentPort = "5000"
-	}
-	agentAddr := fmt.Sprintf("%s:%s", agentHost, agentPort)
-	
-	go manager.RunManager(ctx, db, agentAddr)
 
 	log.Printf("running Orchestrator server at %s", addr)
 	go log.Fatal(server.ListenAndServe())
