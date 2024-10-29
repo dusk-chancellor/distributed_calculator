@@ -1,0 +1,4 @@
+syntax = "proto3";
+package orchestrator;
+
+option go_package = "github.com/dusk-chancellor/distributed_calculator/protos/gen/go";

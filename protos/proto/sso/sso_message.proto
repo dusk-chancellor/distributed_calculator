@@ -1,0 +1,95 @@
+syntax = "proto3";
+package sso;
+
+option go_package = "github.com/dusk-chancellor/distributed_calculator/protos/gen/go";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/field_mask.proto";
+
+message ClientInfo { // to gather metadata
+    string userAgent = 1;
+    string ipAddress = 2;
+}
+
+message SignUpRequest {
+    string email = 1;
+    string username = 2;
+    string fullName = 3;
+    string phoneNumber = 4;
+    string password = 5;
+    ClientInfo clientInfo = 6;
+}
+
+message SignUpResponse {
+    string redirectURL = 1;
+    string token = 2;
+    bool success = 3;
+    string errorMessage = 4;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+    bool rememberMe = 3;
+    ClientInfo clientInfo = 4;
+}
+
+message LoginResponse {
+    string redirectURL = 1; 
+    string token = 2;
+    bool succes = 3;
+    string errorMessage = 4;
+}
+
+message LogoutRequest {
+    string token = 1;
+}
+
+message LogoutResponse {
+    string redirectURL = 1;
+    string errorMessage = 2;
+}
+// jwt auth token validation
+message ValidateTokenRequest {
+    string token = 1;
+}
+
+message ValidateTokenResponse {
+    bool isValid = 1;
+    int64 userId = 2;
+    google.protobuf.Timestamp expiresIn = 3;
+}
+
+message RefreshTokenRequest {
+    string refreshToken = 1;
+}
+
+message RefreshTokenResponse {
+    string newToken = 1;
+    google.protobuf.Timestamp expiresIn = 2;
+}
+
+message GetUserInfoRequest {
+    int64 userId = 1;
+}
+
+message GetUserInfoResponse {
+    int64 userId = 1;
+    string email = 2;
+    string username = 3;
+    string fullName = 4;
+    string phoneNumber = 5;
+}
+
+message UpdateUserInfoRequest {
+    int64 userId = 1;
+    string email = 2;
+    google.protobuf.FieldMask username = 3;
+    google.protobuf.FieldMask fullName = 4;
+    google.protobuf.FieldMask phoneNumber = 5;
+}
+
+message UpdateUserInfoResponse {
+    bool success = 1;
+    string errorMessage = 2;
+}

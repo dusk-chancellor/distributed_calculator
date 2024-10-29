@@ -1,0 +1,5 @@
+syntax = "proto3";
+package agent;
+
+option go_package = "github.com/dusk-chancellor/distributed_calculator/protos/gen/go";
+

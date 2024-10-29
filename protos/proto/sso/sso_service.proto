@@ -1,0 +1,16 @@
+syntax = "proto3";
+package sso;
+
+option go_package = "github.com/dusk-chancellor/distributed_calculator/protos/gen/go";
+
+import "sso/sso_message.proto";
+
+service SsoService {
+    rpc SignUp (SignUpRequest) returns (SignUpResponse) {}
+    rpc Login (LoginRequest) returns (LoginResponse) {}
+    rpc Logout (LogoutRequest) returns (LogoutResponse) {}
+    rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse) {}
+    rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse) {}
+    rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse) {}
+    rpc UpdateUserInfo (UpdateUserInfoRequest) returns (UpdateUserInfoResponse) {}
+}

@@ -1,0 +1,34 @@
+version: '3'
+
+tasks:
+  proto:all: # task proto:all
+    cmds:
+      - task: proto:agent
+      - task: proto:orchestrator
+      - task: proto:sso
+  proto:agent: # task proto:agent
+    cmds:
+      - |
+        protoc \
+          -I=proto \
+          --go_out=gen/go/agent \
+          --go_opt=paths=source_relative \
+          --go-grpc_out=gen/go/agent \
+          --go-grpc_opt=paths=source_relative \
+          proto/agent/*.proto
+    silent: true
+  proto:orchestrator: # task proto:orchestrator
+    cmds:
+      - |
+        protoc \
+          -I=proto \
+          --go_out=gen/go/orchestrator \
+          --go_opt=paths=source_relative \
+          --go-grpc_out=gen/go/orchestrator \
+          --go-grpc_opt=paths=source_relative \
+          proto/orchestrator/*.proto
+    silent: true
+  proto:sso: # task proto:sso
+    cmds:
+      - protoc -I=proto --go_out=gen/go --go_opt=paths=source_relative --go-grpc_out=gen/go --go-grpc_opt=paths=source_relative proto/sso/*.proto
+    silent: true
