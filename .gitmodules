@@ -7,3 +7,6 @@
 [submodule "sso"]
     path = sso
     url = https://github.com/dusk-chancellor/distributed_calculator/sso
+[submodule "protos"]
+    path = protos
+    url = https://github.com/dusk-chancellor/distributed_calculator/protos
