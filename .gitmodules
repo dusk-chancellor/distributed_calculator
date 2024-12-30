@@ -1,12 +1,6 @@
 [submodule "agent"]
     path = agent
-    url = https://github.com/dusk-chancellor/distributed_calculator/agent
 [submodule "orchestrator"]
     path = orchestrator
-    url = https://github.com/dusk-chancellor/distributed_calculator/orchestrator
 [submodule "sso"]
     path = sso
-    url = https://github.com/dusk-chancellor/distributed_calculator/sso
-[submodule "protos"]
-    path = protos
-    url = https://github.com/dusk-chancellor/distributed_calculator/protos

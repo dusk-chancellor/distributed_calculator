@@ -1,0 +1,66 @@
+# SSO Config
+
+# Server Config
+server:
+  port: 8080 # Port on which the sso will run
+  env: "dev" # Env (e.g., dev, stage, prod)
+  timeout: 30s # Server timeout in seconds
+  
+# Database Config
+database:
+  host: "localhost" # Database host
+  port: 5432 # Database port
+  user: "sso_user" # Database username
+  password: "sso_password" # Database password
+  name: "sso_db" # Database name
+  sslmode: "disable" # SSL mode for database connection
+  
+# Redis Config
+redis:
+  host: "localhost" # Redis host
+  port: 6379 # Redis port
+  password: "" # Redis password (if any)
+  db: 0 # Redis database number
+
+# JWT Config
+jwt:
+  secret: "${JWT_SECRET}" # Secret key for JWT signing
+  access_token_duration: 1200s # JWT access token duration time in seconds (e.g., 20 minutes)
+  refresh_token_duration: 2592000s # JWT refresh token duration time in seconds (e.g., 30 day)
+  
+# !!! TODO:
+
+# OAuth2 Config
+#oauth2:
+#  client_id: "your_oauth2_client_id" # OAuth2 client ID
+#  client_secret: "your_oauth2_client_secret" # OAuth2 client secret
+#  redirect_url: "http://localhost:8080/callback" # Redirect URL for OAuth2 callback
+#  auth_url: "https://accounts.google.com/o/oauth2/auth" # OAuth2 authorization URL
+#  token_url: "https://oauth2.googleapis.com/token" # OAuth2 token URL
+
+# Email Config (for notifications)
+#email:
+#  smtp_host: "smtp.gmail.com" # SMTP host
+#  smtp_port: 587 # SMTP port
+#  smtp_user: "your_email@gmail.com" # SMTP username
+#  smtp_password: "your_email_password" # SMTP password
+#  from_address: "no-reply@sso.com" # From email address
+
+# Rate Limiting Config
+#rate_limit:
+#  enabled: true # Enable or disable rate limiting
+#  requests_per_minute: 100 # Maximum requests per minute per IP
+  
+# CORS Config
+#cors:
+#  allowed_origins: # List of allowed origins for CORS
+#    - "http://localhost:3000"
+#    - "https://yourfrontend.com"
+#  allowed_methods: # List of allowed HTTP methods
+#    - "GET"
+#    - "POST"
+#    - "PUT"
+#    - "DELETE"
+#  allowed_headers: # List of allowed headers
+#    - "Content-Type"
+#    - "Authorization"
