@@ -1,8 +1,0 @@
-[submodule "agent"]
-    path = agent
-[submodule "orchestrator"]
-    path = orchestrator
-[submodule "sso"]
-    path = sso
-[submodule "protos"]
-    path = protos
